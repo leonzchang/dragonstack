@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./bin/server",
+    "dev": "nodemon ./bin/server"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.12",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
