@@ -1,4 +1,3 @@
-import { reject } from 'q'
 import pool from '../../databasePool'
 
 interface traitInfo {

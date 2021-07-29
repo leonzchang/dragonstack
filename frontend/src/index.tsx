@@ -1,26 +1,31 @@
 import React from 'react'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
 import { render } from 'react-dom'
+import thunk from 'redux-thunk'
 import Generation from './components/Generation'
 import Dragon from './components/Dragon'
+import  rootReducer  from './reducers'
 import './index.css'
 
-const DEFAULT_GENERATION = {generationId:'',expiration:''}
 
-const generationReducer = () =>{
-    return { generation:DEFAULT_GENERATION }
-}
+const store = createStore(rootReducer,applyMiddleware(thunk))
 
-const store = createStore(generationReducer)
-
-console.log('store',store)
-console.log('store.getState()',store.getState())
+store.subscribe(()=>console.log('store state update',store.getState()))
 
 render(
-    <div>
-        <h2>Dragon Stack</h2>
-        <Generation />
-        <Dragon />
-    </div>,
+    <Provider store={store}>
+        <div>
+            <h2>Dragon Stack</h2>
+            <Generation />
+            <Dragon />
+        </div>
+    </Provider>,
     document.getElementById('root')
 )
+
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch

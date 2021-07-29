@@ -15,10 +15,11 @@ interface dragonProps{
     }
 }
 
+interface propertyMapType {
+    [key: string]: any
+  }
 
-
-
-const propertyMap = {
+const propertyMap:propertyMapType = {
     backgroundColor:{
         black:'#263238',
         white:'#cfd8dc',
@@ -32,7 +33,7 @@ const propertyMap = {
 
 export default class DragonAvatar extends Component<dragonProps>{
     get DragonImage(){
-        const dragonPropertyMap ={}
+        const dragonPropertyMap : propertyMapType ={}
 
         this.props.dragon.traits.forEach(trait =>{
             const {traitType,traitValue} = trait
@@ -45,7 +46,7 @@ export default class DragonAvatar extends Component<dragonProps>{
 
         return(
             <div className='dragon-avatar-image-wrapper'>
-                <div className='dragon-avatar-image-backgrond' style={{backgroundColor , ...sizing}}></div>
+                <div className='dragon-avatar-image-background' style={{backgroundColor , ...sizing}} />
                 <img src={pattern} className='dragon-avatar-image-pattern' style={{ ...sizing}} />
                 <img src={build} className='dragon-avatar-image' style={{ ...sizing}} />
             </div>
@@ -54,12 +55,16 @@ export default class DragonAvatar extends Component<dragonProps>{
 
     render(){
         const {dragonId, generationId, traits} = this.props.dragon
+        
+        if (!dragonId) return <div />
+
 
         return(
             <div>
                 <span>G{generationId}</span>
                 <span>I{dragonId}</span>
                 { traits.map(trait => trait.traitValue).join(', ') }
+                {this.DragonImage}
             </div>
         )
     }

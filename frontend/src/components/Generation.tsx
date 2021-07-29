@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import { fetchGeneration } from '../actions/generation'
+import { RootState } from '..'
+import fetchSate from '../reducers/fetchSate'
 
-const DEFAULT_GENERATION = {generationId:'',exipration:''}
 
 const MINIMUN_DELAY = 3000
 
-export default class Generaion extends Component{
-
-    state = {generation : DEFAULT_GENERATION}
+class Generaion extends Component<propsType>{
     timer !:  NodeJS.Timeout
 
     componentDidMount(){
@@ -16,38 +17,55 @@ export default class Generaion extends Component{
     componentWillUnmount(){
         clearTimeout(this.timer)
     }
-
-    fetchGeneration = () => {
-        fetch('http://localhost:3000/generation')
-        .then(response => response.json())
-        .then(json =>{
-            this.setState({generation: json.generation})
-        })
-        .catch(error => console.error('error',error))
-    }
-
+    
     fetchNextGeneration = () =>{
-        this.fetchGeneration()
+        this.props.fetchGeneration()
 
-        let delay = new Date(this.state.generation.exipration).getTime() - new Date().getTime()
-
+        let delay =   new Date(this.props.generation.expiration).getTime() - new Date().getTime()
+      
         if (delay < MINIMUN_DELAY) {
             delay = MINIMUN_DELAY
         }
 
-        this.timer = setTimeout(() => this.fetchNextGeneration , delay)
+        this.timer = setTimeout(() => this.fetchNextGeneration() , delay)
     }
 
     render(){
-        const { generation } = this .state
+        console.log('this.props ',this.props)
+     
+        const { generation } = this.props
+
+        if (generation.status === fetchSate.fetching){
+            return <div>...</div>
+        }
+
+        if (generation.status === fetchSate.error){
+            return <div>{generation.message}</div>
+        }
 
         return(
             <div>
                 <h3>Generation {generation.generationId}. Expires on:</h3>
-                <h4>{new Date(generation.exipration).toString()}</h4>
+                <h4>{new Date(generation.expiration).toString()}</h4>
             </div>
         )
 }
 
 
+} 
+
+
+const mapStateToProps = (state:RootState) =>{
+    const generation = state.generation
+    
+    return {generation,fetchGeneration}
 }
+
+
+type propsType = ReturnType<typeof mapStateToProps>
+
+const componetConnector = connect(mapStateToProps , {fetchGeneration})
+
+export default  componetConnector(Generaion) 
+
+
