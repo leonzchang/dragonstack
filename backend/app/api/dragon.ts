@@ -3,7 +3,7 @@ import DragonTable from '../dargon/table'
 
 const router = Router()
 
-export default router.get('/new', (req, res, next) => {
+router.get('/new', (req, res, next) => {
     const dragon = req.app.locals.engine.generation.newDragon()
 
     DragonTable.storeDragon(dragon)
@@ -15,3 +15,4 @@ export default router.get('/new', (req, res, next) => {
         .catch(error => next(error))
 })
 
+export default router

@@ -31,8 +31,6 @@ class Generaion extends Component<propsType>{
     }
 
     render(){
-        console.log('this.props ',this.props)
-     
         const { generation } = this.props
 
         if (generation.status === fetchSate.fetching){
