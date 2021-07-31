@@ -1,5 +1,5 @@
 import { GENERATION } from "../actions/type"
-import fetchState from './fetchSate'
+import fetchState from './fetchState'
 
 
 interface generationType{
@@ -11,7 +11,7 @@ interface generationType{
 
 interface generationAction{
     type:string,
-    generation:generationType,
+    generation?:generationType,
     message?:string
 }
 
@@ -25,7 +25,7 @@ const DEFAULT_GENERATION = {generationId:'',expiration:''}
         case GENERATION.FETCH_ERROR:
             return {...state, message:action.message, status:fetchState.error}
         case GENERATION.FETCH_SUCCESS:
-            return {...state , ...action.generation,  status:fetchState.success}
+            return {...state , ...action.generation, status:fetchState.success}
         default:
             return state 
 

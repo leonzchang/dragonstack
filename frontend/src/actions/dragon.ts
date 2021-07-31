@@ -3,10 +3,12 @@ import { BACKEND } from "../config"
 import { AppDispatch} from '..'
 
 
-export const fetchDragon = () => (dispatch:AppDispatch) => {
+export const fetchDragon = () => (dispatch:AppDispatch)  => {
     dispatch({ type:DRAGON.FETCH })
 
-    fetch(`${BACKEND.address}/dragon/new`)
+    return fetch(`${BACKEND.address}/dragon/new`,{
+        credentials:'include'
+    })
     .then(response => response.json())
     .then(json =>{
         if(json.type === 'error'){

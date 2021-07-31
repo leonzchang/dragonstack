@@ -2,7 +2,10 @@ import { Router } from 'express'
 import AccountTable from '../account/table'
 import Session from '../account/session'
 import hash from '../account/helper'
-import setSession from './helper'
+import { setSession, authenticatedAccount } from './helper'
+import AccountDragonTable from '../accountDragon/table'
+import getDragonWithTraits from '../dargon/helper'
+import Dragon from '../dargon/index'
 
 
 interface ErrorType extends Error {
@@ -17,24 +20,24 @@ router.post('/signup', (req, res, next) => {
     const passwordHash = hash(password)
 
     AccountTable.getAccount({usernameHash })
-        .then(({account})=>{
-            if(!account){
-                return AccountTable.storeAccount({usernameHash, passwordHash})
-            }else{
-                const error:ErrorType = new Error('This username has already been taken')
- 
-                error.statusCode = 409
-                
-                throw(error)
-            }
-        })
-        .then(() =>{
-            return setSession({username,res})
-        })
-        .then(({message})=>{
-            res.json({message})
-        })
-        .catch(error => next(error))
+    .then(({account})=>{
+        if(!account){
+            return AccountTable.storeAccount({usernameHash, passwordHash})
+        }else{
+            const error:ErrorType = new Error('This username has already been taken')
+
+            error.statusCode = 409
+            
+            throw(error)
+        }
+    })
+    .then(() =>{
+        return setSession({username,res})
+    })
+    .then(({message})=>{
+        res.json({message})
+    })
+    .catch(error => next(error))
 })
 
 router.post('/login', (req, res, next) => {
@@ -71,6 +74,39 @@ router.get('/logout', (req, res, next) => {
 
         res.json({message:'Successful logout'})
     })
+    .catch(error => next(error))
+})
+
+
+router.get('/authenticated', (req, res, next) => {
+    
+    authenticatedAccount({ sessionString: req.cookies.sessionString })
+    .then(({ authenticated }) => res.json({ authenticated }))
+    .catch(error => next(error))
+  
+
+})
+
+
+router.get('/dragons', (req, res, next) => {
+    
+    authenticatedAccount({ sessionString: req.cookies.sessionString })
+    .then(({ account }) => {
+        return AccountDragonTable.getAccountDragon({
+            accountId: account.id
+        })
+    })
+    .then(({ accountDragons }) => {
+        return Promise.all(
+            accountDragons.map(accountDragon =>{
+                return getDragonWithTraits({dragonId: accountDragon.dragonId})
+            })
+        )
+    })
+    .then(dragons => {
+        res.json({ dragons })
+    })
+    
     .catch(error => next(error))
 })
 

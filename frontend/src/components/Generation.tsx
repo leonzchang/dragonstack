@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect, ConnectedProps } from 'react-redux'
 import { fetchGeneration } from '../actions/generation'
 import { RootState } from '..'
-import fetchSate from '../reducers/fetchSate'
+import fetchState from '../reducers/fetchState'
 
 
 const MINIMUN_DELAY = 3000
 
-class Generaion extends Component<propsType>{
+class Generaion extends Component<PropsFromRedux>{
     timer !:  NodeJS.Timeout
 
     componentDidMount(){
@@ -33,11 +33,11 @@ class Generaion extends Component<propsType>{
     render(){
         const { generation } = this.props
 
-        if (generation.status === fetchSate.fetching){
+        if (generation.status === fetchState.fetching){
             return <div>...</div>
         }
 
-        if (generation.status === fetchSate.error){
+        if (generation.status === fetchState.error){
             return <div>{generation.message}</div>
         }
 
@@ -56,13 +56,12 @@ class Generaion extends Component<propsType>{
 const mapStateToProps = (state:RootState) =>{
     const generation = state.generation
     
-    return {generation,fetchGeneration}
+    return {generation}
 }
 
+const componetConnector = connect(mapStateToProps, { fetchGeneration })
 
-type propsType = ReturnType<typeof mapStateToProps>
-
-const componetConnector = connect(mapStateToProps , {fetchGeneration})
+type PropsFromRedux = ConnectedProps<typeof componetConnector>
 
 export default  componetConnector(Generaion) 
 

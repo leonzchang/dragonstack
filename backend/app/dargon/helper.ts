@@ -25,20 +25,20 @@ const getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
                 [dragonId],
                 (error, response) => {
                     if (error) return reject(error)
-
+                   
                     resolve(response.rows)
                 }
             )
         })
     ])
-        .then(([dragon, dragonTraits]) => {
-            return new Dragon({
-                ...dragon,
-                dragonId,
-                traits: dragonTraits
-            })
+    .then(([dragon, dragonTraits]) => {
+        return new Dragon({
+            ...dragon,
+            dragonId,
+            traits: dragonTraits
         })
-        .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
 }
 
 export default getDragonWithTraits

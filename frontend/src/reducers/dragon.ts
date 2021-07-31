@@ -1,5 +1,5 @@
 import { DRAGON } from "../actions/type"
-import fetchState from './fetchSate'
+import fetchState from './fetchState'
 
 
 interface traitsType {
@@ -14,6 +14,7 @@ interface dragonType{
     nickname: string
     traits: traitsType[]
     message?:string
+    status?:string
 }
 
 interface dragonAction{
@@ -32,7 +33,7 @@ const DEFAULT_DRAGON = {dragonId:'',generationId:'',birthdate:'',nickname:'',tra
         case DRAGON.FETCH_ERROR:
             return {...state, message:action.message, status:fetchState.error}
         case DRAGON.FETCH_SUCCESS:
-            return {...state , ...action.dragon,  status:fetchState.success}
+            return {...state , ...action.dragon, status:fetchState.success}
         default:
             return state 
 

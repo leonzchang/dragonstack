@@ -3,26 +3,27 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { render } from 'react-dom'
 import thunk from 'redux-thunk'
-import Generation from './components/Generation'
-import Dragon from './components/Dragon'
+import Root from './components/Root'
 import  rootReducer  from './reducers'
+import { fetchAuthenticated } from './actions/account'
 import './index.css'
 
 
 const store = createStore(rootReducer,applyMiddleware(thunk))
 
+//need to fix
+store.dispatch<any>(fetchAuthenticated())
+    .then(()=>{
+        render(
+            <Provider store={store}>
+                <Root />
+            </Provider>,
+            document.getElementById('root')
+        )
+    })
+
 store.subscribe(()=>console.log('store state update',store.getState()))
 
-render(
-    <Provider store={store}>
-        <div>
-            <h2>Dragon Stack</h2>
-            <Generation />
-            <Dragon />
-        </div>
-    </Provider>,
-    document.getElementById('root')
-)
 
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

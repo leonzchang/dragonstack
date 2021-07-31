@@ -1,13 +1,14 @@
-import React, {Component} from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { connect, ConnectedProps } from 'react-redux'
 import { fetchDragon } from '../actions/dragon'
 import DragonAvatar from './DragonAvatar'
 import { RootState } from '..'
 import { Button } from 'react-bootstrap'
 
 
-class Dragon extends Component<propsType>{
-   
+
+class Dragon extends Component<PropsFromRedux>{
+ 
     render(){
         return(
             <div>
@@ -22,11 +23,12 @@ class Dragon extends Component<propsType>{
 const mapStateToProps = (state:RootState) =>{
     const dragon = state.dragon
 
-    return {dragon,fetchDragon}
+    return {dragon}
 }
 
-type propsType = ReturnType<typeof mapStateToProps>
 
-const componetConnector = connect(mapStateToProps , {fetchDragon})
+const componetConnector = connect(mapStateToProps, { fetchDragon })
+
+type PropsFromRedux = ConnectedProps<typeof componetConnector>
 
 export default componetConnector(Dragon)

@@ -14,6 +14,24 @@ interface setSessionCookieInfo{
     res:Response
 }
 
+interface ErrorType extends Error {
+    statusCode?: number;
+}
+
+interface authenticatedAccountInfo {
+    sessionString:string
+}
+
+interface authenticatedAccountReturnType{
+    account: {
+        id: number;
+        passwordHash: string;
+        sessionId: string;
+    },
+    authenticated: boolean
+}
+    
+
 const setSession = ({username, res, sessionId}:setSessionInfo) =>{
     return new Promise<{message:string}>((resolve ,reject)=>{
         let session:Session,sessionString:string
@@ -50,4 +68,31 @@ const setSessionCookie = ({ sessionString, res}:setSessionCookieInfo) => {
     })
 }
 
-export default setSession
+
+const authenticatedAccount = ({sessionString}:authenticatedAccountInfo) =>{
+     return new Promise<authenticatedAccountReturnType>((resolve,reject)=>{
+        if( !sessionString || !Session.verify(sessionString) ){
+            const error:ErrorType = new Error('Invalid session')
+
+            error.statusCode = 400
+    
+            reject(error)
+        }else{
+            const {username, id} = Session.parse(sessionString)
+    
+            AccountTable.getAccount({ usernameHash:hash(username) })
+            .then(({account})=>{
+                const authenticated = account.sessionId === id
+    
+                resolve({account, authenticated})
+            })
+            .catch(error => reject(error))
+        }
+     })
+}
+
+
+export { 
+    setSession,
+    authenticatedAccount 
+}
