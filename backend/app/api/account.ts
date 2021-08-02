@@ -4,8 +4,8 @@ import Session from '../account/session'
 import hash from '../account/helper'
 import { setSession, authenticatedAccount } from './helper'
 import AccountDragonTable from '../accountDragon/table'
-import getDragonWithTraits from '../dargon/helper'
-import Dragon from '../dargon/index'
+import {getDragonWithTraits} from '../dargon/helper'
+
 
 
 interface ErrorType extends Error {
@@ -108,6 +108,17 @@ router.get('/dragons', (req, res, next) => {
     })
     
     .catch(error => next(error))
+})
+
+
+router.get('/info', (req, res, next) => {
+    
+    authenticatedAccount({ sessionString: req.cookies.sessionString })
+    .then(({account, username})=>{
+        res.json({info:{balance: account.balance, username}})
+    })
+    .catch(error => next(error))
+
 })
 
 

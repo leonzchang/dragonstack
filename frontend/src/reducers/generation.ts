@@ -18,7 +18,7 @@ interface generationAction{
 
 const DEFAULT_GENERATION = {generationId:'',expiration:''}
 
- const generationReducer = (state:generationType = DEFAULT_GENERATION ,action:generationAction) =>{
+const generationReducer = (state:generationType = DEFAULT_GENERATION ,action:generationAction) =>{
     switch(action.type){
         case GENERATION.FETCH:
             return {...state, status:fetchState.fetching}

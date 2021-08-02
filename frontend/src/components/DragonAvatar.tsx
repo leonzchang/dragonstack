@@ -8,10 +8,11 @@ interface traitsType {
 
 interface dragonProps{
     dragon:{
-        dragonId:string,
-        generationId:string,
-        birthdate:string,
-        traits :traitsType[]
+        dragonId?:number,
+        generationId?:number,
+        nickname?: string
+        birthdate?:Date,
+        traits ?:traitsType[]
     }
 }
 
@@ -35,7 +36,7 @@ export default class DragonAvatar extends Component<dragonProps>{
     get DragonImage(){
         const dragonPropertyMap : propertyMapType ={}
 
-        this.props.dragon.traits.forEach(trait =>{
+        this.props.dragon.traits?.forEach(trait =>{
             const {traitType,traitValue} = trait
 
             dragonPropertyMap[traitType] = propertyMap[traitType][traitValue]
@@ -63,7 +64,7 @@ export default class DragonAvatar extends Component<dragonProps>{
             <div>
                 <span>G{generationId}</span>
                 <span>I{dragonId}</span>
-                { traits.map(trait => trait.traitValue).join(', ') }
+                { traits?.map(trait => trait.traitValue).join(', ') }
                 {this.DragonImage}
             </div>
         )

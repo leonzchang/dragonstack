@@ -7,7 +7,9 @@ export default class Generation {
 
     expiration: Date
     generationId?: number
+    accountIds:Set<number>
     constructor() {
+        this.accountIds = new Set()
         this.expiration = this.calculateExpiration()
         this.generationId = undefined
     }
@@ -20,10 +22,15 @@ export default class Generation {
         return new Date(Date.now() + msUntilExpiration)
     }
 
-    newDragon() {
+    newDragon({accountId}:{accountId:number}) {
         if (new Date(Date.now()) > this.expiration) {
             throw new Error(`This generation expired on ${this.expiration}`)
         }
+
+        if (this.accountIds.has(accountId)) throw new Error('You already have dragon from this generation')
+        
+        this.accountIds.add(accountId)    //each account only can get one dragon on each generation 
+
         return new Dragon({ generationId: this.generationId })
     }
 }

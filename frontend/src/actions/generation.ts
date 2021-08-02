@@ -6,7 +6,7 @@ import { AppDispatch} from '..'
 export const fetchGeneration = () => (dispatch:AppDispatch) => {
     dispatch({ type:GENERATION.FETCH })
 
-    return fetch(`${BACKEND.address}/generation`)
+    return fetch(`${BACKEND.ADDRESS}/generation`)
     .then(response => response.json())
     .then(json =>{
         if(json.type === 'error'){

@@ -2,6 +2,7 @@ import Dragon from "./index";
 import pool from "../../databasePool";
 import DragonTable from "./table";
 
+
 interface traitsType {
     traitType: string
     traitValue: string
@@ -11,12 +12,16 @@ interface getDragonInfo {
     birthdate: Date,
     nickname: string,
     generationId: number
+    saleValue:number
+    sireValue:number
+    isPublic:boolean
 }
 
-const getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
-    return Promise.all<getDragonInfo, traitsType[]>([
+
+const  getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
+    return Promise.all([
         DragonTable.getDragon({ dragonId }),
-        new Promise((resolve, reject) => {
+        new Promise<Array<traitsType>>((resolve, reject) => {
             pool.query(
                 `SELECT "traitType", "traitValue" 
                 FROM trait 
@@ -24,7 +29,7 @@ const getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
                 WHERE dragonTrait."dragonId" = $1`,
                 [dragonId],
                 (error, response) => {
-                    if (error) return reject(error)
+                    if (error) reject(error)
                    
                     resolve(response.rows)
                 }
@@ -41,4 +46,26 @@ const getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
     .catch(error => console.error(error))
 }
 
-export default getDragonWithTraits
+
+
+const getPublicDragons = () => {
+    return new Promise<{dragons:(void | Dragon)[]}>((resolve, reject)=>{
+        pool.query(
+            'SELECT id FROM dragon WHERE "isPublic" = True',
+            (error, response) =>{
+                if (error) return reject(error)
+
+                const publicDragonRows = response.rows
+
+                Promise.all(
+                    publicDragonRows.map(({id})=>getDragonWithTraits({dragonId:id}))
+                ).then((dragons)=> resolve({dragons}))
+                 .catch(error=>reject(error))
+            }
+
+        )
+    })
+}
+
+
+export  {getDragonWithTraits, getPublicDragons}

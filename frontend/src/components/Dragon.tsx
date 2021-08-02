@@ -4,16 +4,26 @@ import { fetchDragon } from '../actions/dragon'
 import DragonAvatar from './DragonAvatar'
 import { RootState } from '..'
 import { Button } from 'react-bootstrap'
+import fetchState from '../reducers/fetchState'
 
 
 
 class Dragon extends Component<PropsFromRedux>{
+
+    get DragonView(){    
+        const { dragon } = this.props                            //each account only can get one dragon on each generation
+        
+        if(dragon.status === fetchState.error)  return <span>{dragon.message}</span>
+
+        return <DragonAvatar dragon={dragon} />
+    }
  
     render(){
         return(
             <div>
                 <Button onClick={this.props.fetchDragon}>New Dragon</Button>
-               <DragonAvatar dragon={this.props.dragon}/>
+                <br />
+                { this.DragonView }
             </div>
         )
     }

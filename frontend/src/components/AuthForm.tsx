@@ -48,6 +48,7 @@ class AuthForm extends Component<PropsFromRedux>{
         return(
             <div>
                 <h2>Dragon Stack</h2>
+                <br />
                 <FormGroup>
                     <FormControl
                         type='text'
@@ -56,6 +57,7 @@ class AuthForm extends Component<PropsFromRedux>{
                         onChange={this.updateUsername}
                     />
                 </FormGroup>
+                <br />
                 <FormGroup>
                     <FormControl
                         type='password'
@@ -64,6 +66,7 @@ class AuthForm extends Component<PropsFromRedux>{
                         onChange={this.updatePassword}
                     />
                 </FormGroup>
+                <br />
                 <div>
                     <Button onClick={this.login}>Log in</Button>
                     <span> or </span>

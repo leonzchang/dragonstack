@@ -10,19 +10,21 @@ interface userInfo{
 interface fectchFromAccountInfo{
     endpoint:string,
     options:RequestInit,
+    FETCH_TYPE:string,
+    ERROR_TYPE:string
     SUCCESS_TYPE:string
 }
 
 
-const fectchFromAccount = ({endpoint, options, SUCCESS_TYPE}:fectchFromAccountInfo) => (dispatch:AppDispatch) => {
-    dispatch({ type:ACCOUNT.FETCH })
+export const fectchFromAccount = ({endpoint, options, FETCH_TYPE, ERROR_TYPE, SUCCESS_TYPE}:fectchFromAccountInfo) => (dispatch:AppDispatch) => {
+    dispatch({ type:FETCH_TYPE })
 
-    return fetch(`${BACKEND.address}/account/${endpoint}`, options)
+    return fetch(`${BACKEND.ADDRESS}/account/${endpoint}`, options)
     .then(response => response.json())
     .then(json =>{
         if(json.type === 'error'){
             dispatch({ 
-                type:ACCOUNT.FETCH_ERROR,
+                type:ERROR_TYPE,
                 message:json.message
             })
         }else{
@@ -33,7 +35,7 @@ const fectchFromAccount = ({endpoint, options, SUCCESS_TYPE}:fectchFromAccountIn
         }
     })
     .catch(error => dispatch({
-        type:ACCOUNT.FETCH_ERROR,
+        type:ERROR_TYPE,
         message:error.message 
     }))
 }
@@ -47,6 +49,8 @@ export const signup = ({username, password}:userInfo) => fectchFromAccount({
         headers:{'Content-Type':'application/json'},
         credentials:'include'
     },
+    FETCH_TYPE:ACCOUNT.FETCH,
+    ERROR_TYPE:ACCOUNT.FETCH_ERROR,
     SUCCESS_TYPE:ACCOUNT.FETCH_SUCCESS
 })
 
@@ -58,6 +62,8 @@ export const login = ({username, password}:userInfo) => fectchFromAccount({
         headers:{'Content-Type':'application/json'},
         credentials:'include'
     },
+    FETCH_TYPE:ACCOUNT.FETCH,
+    ERROR_TYPE:ACCOUNT.FETCH_ERROR,
     SUCCESS_TYPE:ACCOUNT.FETCH_SUCCESS
 })
  
@@ -66,6 +72,8 @@ export const fetchAuthenticated = () => fectchFromAccount({
     options:{
         credentials:'include'
     },
+    FETCH_TYPE:ACCOUNT.FETCH,
+    ERROR_TYPE:ACCOUNT.FETCH_ERROR,
     SUCCESS_TYPE:ACCOUNT.FETCH_AUTHENTICATED_SUCCESS
 })
 
@@ -74,6 +82,8 @@ export const logout = () => fectchFromAccount({
     options:{
         credentials:'include'
     },
+    FETCH_TYPE:ACCOUNT.FETCH,
+    ERROR_TYPE:ACCOUNT.FETCH_ERROR,
     SUCCESS_TYPE:ACCOUNT.FETCH_LOGOUT_SUCCESS
 })
 

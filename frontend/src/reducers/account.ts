@@ -2,7 +2,7 @@ import { ACCOUNT } from "../actions/type";
 import fetchState from "./fetchState";
 
 interface accountType{
-    loggedIn: boolean
+    loggedIn?: boolean
     message?:string
     status?:string
 }
@@ -11,7 +11,7 @@ interface accountType{
 interface accountAction{
     type:string,
     message?:string
-    authenticated:boolean //not pass everytime
+    authenticated?:boolean //not pass everytime
 }
 
 const DEFAULT_ACCOUNT ={loggedIn: false }

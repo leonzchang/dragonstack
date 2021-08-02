@@ -6,7 +6,7 @@ import { AppDispatch} from '..'
 export const fetchDragon = () => (dispatch:AppDispatch)  => {
     dispatch({ type:DRAGON.FETCH })
 
-    return fetch(`${BACKEND.address}/dragon/new`,{
+    return fetch(`${BACKEND.ADDRESS}/dragon/new`,{
         credentials:'include'
     })
     .then(response => response.json())

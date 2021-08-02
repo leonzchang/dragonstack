@@ -27,8 +27,10 @@ interface authenticatedAccountReturnType{
         id: number;
         passwordHash: string;
         sessionId: string;
+        balance:number
     },
-    authenticated: boolean
+    authenticated: boolean,
+    username:string
 }
     
 
@@ -84,7 +86,7 @@ const authenticatedAccount = ({sessionString}:authenticatedAccountInfo) =>{
             .then(({account})=>{
                 const authenticated = account.sessionId === id
     
-                resolve({account, authenticated})
+                resolve({account, authenticated, username})
             })
             .catch(error => reject(error))
         }
