@@ -18,7 +18,7 @@ interface getDragonInfo {
 }
 
 
-const  getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
+const  getDragonWithTraits =  ({ dragonId }: { dragonId: number }) => {
     return Promise.all([
         DragonTable.getDragon({ dragonId }),
         new Promise<Array<traitsType>>((resolve, reject) => {
@@ -43,7 +43,7 @@ const  getDragonWithTraits = ({ dragonId }: { dragonId: number }) => {
             traits: dragonTraits
         })
     })
-    .catch(error => console.error(error))
+    // .catch(error => console.error(error))
 }
 
 

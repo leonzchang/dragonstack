@@ -2,7 +2,7 @@ import { ACCOUNT_INFO } from "../actions/type";
 import fetchState from "./fetchState";
 
 
-interface accountInfoType{
+interface reduxAccountInfoState{
     balance?:number,
     username?:string
     message?:string
@@ -22,7 +22,7 @@ interface accountInfoAction{
 
 const DEFAULT_ACCOUNTINFO = {}
 
-const accountInfoReducer = (state:accountInfoType = DEFAULT_ACCOUNTINFO ,action:accountInfoAction) =>{
+const accountInfoReducer = (state:reduxAccountInfoState = DEFAULT_ACCOUNTINFO ,action:accountInfoAction) =>{
     switch(action.type){
         case ACCOUNT_INFO.FETCH:
             return {...state, status:fetchState.fetching}

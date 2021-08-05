@@ -18,16 +18,19 @@ class Generaion extends Component<PropsFromRedux>{
         clearTimeout(this.timer)
     }
     
-    fetchNextGeneration = () =>{
+    fetchNextGeneration = () => {
         this.props.fetchGeneration()
 
-        let delay =   new Date(this.props.generation.expiration).getTime() - new Date().getTime()
+        let delay =   new Date(this.props.generation.expiration!).getTime() - Date.now()
+        console.log('delay:',delay)
+        console.log('expiration',new Date(this.props.generation.expiration!))
+        console.log('now',new Date(Date.now()))
       
         if (delay < MINIMUN_DELAY) {
             delay = MINIMUN_DELAY
         }
 
-        this.timer = setTimeout(() => this.fetchNextGeneration() , delay)
+        this.timer = setTimeout(() => this.fetchNextGeneration(), delay)
     }
 
     render(){
@@ -44,12 +47,10 @@ class Generaion extends Component<PropsFromRedux>{
         return(
             <div>
                 <h3>Generation {generation.generationId}. Expires on:</h3>
-                <h4>{new Date(generation.expiration).toString()}</h4>
+                <h4>{new Date(generation.expiration!).toString()}</h4>
             </div>
         )
-}
-
-
+    }
 } 
 
 

@@ -3,7 +3,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { render } from 'react-dom'
 import thunk from 'redux-thunk'
-import { Router, Switch, Route, Redirect } from 'react-router-dom'
+import { Router, Switch, Route, Redirect, RouteProps} from 'react-router-dom'
 import  rootReducer  from './reducers'
 import { fetchAuthenticated } from './actions/account'
 import Root from './components/Root'
@@ -17,7 +17,8 @@ import './index.css'
 const store = createStore(rootReducer,applyMiddleware(thunk))
 
 
-const AuthRoute = (props:{component:any, path:string}) =>{
+//type fix
+const AuthRoute = (props:RouteProps) =>{
     if (!store.getState().account.loggedIn){
         return <Redirect to={{pathname:'/'}} />
     }
@@ -45,7 +46,7 @@ store.dispatch<any>(fetchAuthenticated())
         )
     })
 
-store.subscribe(()=>console.log('store state update',store.getState()))
+// store.subscribe(()=>console.log('store state update',store.getState()))
 
 
 

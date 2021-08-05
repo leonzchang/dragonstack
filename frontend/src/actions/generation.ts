@@ -4,7 +4,7 @@ import { AppDispatch} from '..'
 
 
 export const fetchGeneration = () => (dispatch:AppDispatch) => {
-    dispatch({ type:GENERATION.FETCH })
+    // dispatch({ type:GENERATION.FETCH })
 
     return fetch(`${BACKEND.ADDRESS}/generation`)
     .then(response => response.json())

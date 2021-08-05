@@ -1,7 +1,9 @@
 import { ACCOUNT } from "../actions/type";
 import fetchState from "./fetchState";
+import {Reducer} from 'redux'
 
-interface accountType{
+
+interface reduxAccountSate{
     loggedIn?: boolean
     message?:string
     status?:string
@@ -16,7 +18,8 @@ interface accountAction{
 
 const DEFAULT_ACCOUNT ={loggedIn: false }
 
-const accountReducer = (state:accountType = DEFAULT_ACCOUNT ,action:accountAction) =>{
+
+const accountReducer = (state:reduxAccountSate = DEFAULT_ACCOUNT ,action:accountAction) =>{
     switch(action.type){
         case ACCOUNT.FETCH:
             return {...state, status:fetchState.fetching}
@@ -34,4 +37,3 @@ const accountReducer = (state:accountType = DEFAULT_ACCOUNT ,action:accountActio
 }
 
 export default accountReducer 
-

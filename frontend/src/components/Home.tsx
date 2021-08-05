@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect,ConnectedProps } from 'react-redux'
 import { logout } from '../actions/account'
+import { fectchAccountDragons } from '../actions/accountDragons' 
 import Generation from './Generation'
 import Dragon from './Dragon'
 import AccountInfo from './AccountInfo'
@@ -10,6 +11,9 @@ import { Button } from 'react-bootstrap'
 
 
 class Home extends Component<PropsFromRedux>{
+    componentDidMount(){
+        this.props.fectchAccountDragons()  //update account dragons redux state and also clean previous state
+    }
     render(){
         return (
             <div>
@@ -28,7 +32,7 @@ class Home extends Component<PropsFromRedux>{
     }
 }
 
-const componetConnector = connect(null, { logout })
+const componetConnector = connect(null, { logout, fectchAccountDragons })
 
 type PropsFromRedux = ConnectedProps<typeof componetConnector>
 

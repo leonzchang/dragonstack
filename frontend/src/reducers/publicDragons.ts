@@ -3,9 +3,9 @@ import fetchState from './fetchState'
 
 
 interface dragonInfo {
-    dragonId: string
-    generationId: string
-    birthdate: string
+    dragonId: number
+    generationId: number
+    birthdate: Date
     nickname: string
     traits: Array<{traitType: string ,traitValue: string}>
     isPublic:boolean
@@ -13,7 +13,7 @@ interface dragonInfo {
     sireValue:number
 }
 
-interface publicDragonsType{
+interface reduxPublicDragonsType{
     dragons?:Array<dragonInfo>
     message?:string
     status?:string
@@ -28,7 +28,7 @@ interface publicDragonsAction{
 
 const DEFAULT_PUBLIC_DRAGONS = {dragons:[]}
 
-const publicDragonsReducer = (state:publicDragonsType= DEFAULT_PUBLIC_DRAGONS  ,action:publicDragonsAction) =>{
+const publicDragonsReducer = (state:reduxPublicDragonsType= DEFAULT_PUBLIC_DRAGONS  ,action:publicDragonsAction) =>{
     switch(action.type){
         case PUBLIC_DRAGONS.FETCH:
             return {...state, status:fetchState.fetching}

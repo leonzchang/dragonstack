@@ -10,7 +10,7 @@ interface traitsType {
 interface dragonType{
     dragonId: number
     generationId: number
-    birthdate: string
+    birthdate: Date
     nickname: string
     isPublic:boolean
     saleValue:number
@@ -18,7 +18,7 @@ interface dragonType{
     traits: traitsType[]
 }
 
-interface accountDragonsType{
+interface reduxAccountDragonsState{
     dragons?: dragonType[]
     message?:string
     status?:string
@@ -34,14 +34,14 @@ interface accountDragonsAction{
 
 const DEFAULT_ACCOUNT_DRAGONS = {dragons:[]}
 
-const accountDragonsReducer = (state:accountDragonsType = DEFAULT_ACCOUNT_DRAGONS, action:accountDragonsAction) =>{
+const accountDragonsReducer = (state:reduxAccountDragonsState = DEFAULT_ACCOUNT_DRAGONS, action:accountDragonsAction) =>{
     switch(action.type){
         case ACCOUNT_DRAGONS.FETCH:
             return {...state, status:fetchState.fetching}
         case ACCOUNT_DRAGONS.FETCH_ERROR:
             return {...state, message:action.message, status:fetchState.error}
         case ACCOUNT_DRAGONS.FETCH_SUCCESS:
-            return {...state, status:fetchState.success, message:action.message, dragons:action.dragons}
+            return {...state, status:fetchState.success, dragons:action.dragons}
         default:
             return state 
     }

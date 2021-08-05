@@ -16,6 +16,9 @@ interface dragonType{
     isPublic?:boolean
     saleValue?:number
     sireValue?:number
+}
+
+interface reduxDragonState extends dragonType{
     message?:string
     status?:string
 }
@@ -27,10 +30,9 @@ interface dragonAction{
 }
 
 
-// const DEFAULT_DRAGON = {dragonId:'',generationId:'',birthdate:'',nickname:'',traits:[]}
 const DEFAULT_DRAGON = {}
 
-const dragonReducer = (state:dragonType = DEFAULT_DRAGON ,action:dragonAction) =>{
+const dragonReducer = (state:reduxDragonState = DEFAULT_DRAGON ,action:dragonAction) =>{
     switch(action.type){
         case DRAGON.FETCH:
             return {...state, status:fetchState.fetching}

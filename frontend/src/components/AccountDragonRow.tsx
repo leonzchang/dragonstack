@@ -10,18 +10,16 @@ interface traitsType {
 
 interface dragonProps{
     dragon:{
-        dragonId:string,
-        generationId:string,
+        dragonId:number,
+        generationId:number,
         nickname: string
-        birthdate:string,
+        birthdate:Date,
         traits :traitsType[],
         isPublic:boolean,
         saleValue:number
         sireValue:number
-    }
+    },
 }
-
-//need to fix: update redux when change nickname
 
 export default class AccountDragonRow extends Component<dragonProps>{
     state = {
@@ -85,7 +83,7 @@ export default class AccountDragonRow extends Component<dragonProps>{
         return (
             <>
                 <Button onClick={this.save}>Save</Button>{' '}
-                <Button onClick={this.toggleCancel}>Concel</Button>
+                <Button onClick={this.toggleCancel}>Cancel</Button>
             </>
         )
     }

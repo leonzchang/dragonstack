@@ -3,8 +3,11 @@ import fetchState from './fetchState'
 
 
 interface generationType{
-    generationId :string,
-    expiration :string 
+    generationId ?:number,
+    expiration ?:Date 
+}
+
+interface reduxGenerationState extends generationType{
     message?:string
     status?:string
 }
@@ -16,16 +19,16 @@ interface generationAction{
 }
 
 
-const DEFAULT_GENERATION = {generationId:'',expiration:''}
+const DEFAULT_GENERATION = {}
 
-const generationReducer = (state:generationType = DEFAULT_GENERATION ,action:generationAction) =>{
+const generationReducer = (state:reduxGenerationState = DEFAULT_GENERATION ,action:generationAction) =>{
     switch(action.type){
-        case GENERATION.FETCH:
-            return {...state, status:fetchState.fetching}
+        // case GENERATION.FETCH:
+        //     return {...state, status:fetchState.fetching}
         case GENERATION.FETCH_ERROR:
             return {...state, message:action.message, status:fetchState.error}
         case GENERATION.FETCH_SUCCESS:
-            return {...state , ...action.generation, status:fetchState.success}
+            return {...state , ...action.generation, status:fetchState.success }
         default:
             return state 
 

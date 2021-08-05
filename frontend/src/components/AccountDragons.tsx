@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 class AccountDragons extends Component<PropsFromRedux>{
     componentDidMount(){
-        this.props.fectchAccountDragons()
+        this.props.fectchAccountDragons() //update when get a new dragon
     }
 
     render(){
