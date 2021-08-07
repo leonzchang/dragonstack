@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import { Button, FormGroup, FormControl } from 'react-bootstrap'
 import { signup, login } from '../actions/account'
 import fetchState from '../reducers/fetchState'
-import { RootState } from '..'
+import { RootState } from '../index'
 
 
 

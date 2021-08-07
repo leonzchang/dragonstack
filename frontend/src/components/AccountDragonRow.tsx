@@ -134,7 +134,6 @@ export default class AccountDragonRow extends Component<dragonProps>{
                         this.state.edit ? this.SaveButton : this.EditButton
                     }
                 </div>
-
             </div>
         )
     }

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { fetchGeneration } from '../actions/generation'
-import { RootState } from '..'
+import { RootState } from '../index'
 import fetchState from '../reducers/fetchState'
+
 
 
 const MINIMUN_DELAY = 3000
@@ -18,15 +19,12 @@ class Generaion extends Component<PropsFromRedux>{
         clearTimeout(this.timer)
     }
     
-    fetchNextGeneration = () => {
-        this.props.fetchGeneration()
+    fetchNextGeneration = async() => {
+        await this.props.fetchGeneration()  //promise
 
         let delay =   new Date(this.props.generation.expiration!).getTime() - Date.now()
-        console.log('delay:',delay)
-        console.log('expiration',new Date(this.props.generation.expiration!))
-        console.log('now',new Date(Date.now()))
-      
-        if (delay < MINIMUN_DELAY) {
+
+        if (delay < MINIMUN_DELAY) {        //prevent api update slower
             delay = MINIMUN_DELAY
         }
 
@@ -36,9 +34,9 @@ class Generaion extends Component<PropsFromRedux>{
     render(){
         const { generation } = this.props
 
-        if (generation.status === fetchState.fetching){
-            return <div>...</div>
-        }
+        // if (generation.status === fetchState.fetching){
+        //     return <div>...</div>
+        // }
 
         if (generation.status === fetchState.error){
             return <div>{generation.message}</div>

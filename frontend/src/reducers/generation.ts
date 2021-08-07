@@ -23,8 +23,8 @@ const DEFAULT_GENERATION = {}
 
 const generationReducer = (state:reduxGenerationState = DEFAULT_GENERATION ,action:generationAction) =>{
     switch(action.type){
-        // case GENERATION.FETCH:
-        //     return {...state, status:fetchState.fetching}
+        case GENERATION.FETCH:
+            return {...state, status:fetchState.fetching}
         case GENERATION.FETCH_ERROR:
             return {...state, message:action.message, status:fetchState.error}
         case GENERATION.FETCH_SUCCESS:

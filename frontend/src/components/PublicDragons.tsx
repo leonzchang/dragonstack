@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import { fectchPublicDragons } from '../actions/publicDragons'
 import { fectchAccountDragons } from '../actions/accountDragons' 
 import PublicDragonRow from './PublicDragonRow'
-import { RootState } from '..'
+import { RootState } from '../index'
 import { Link } from 'react-router-dom'
 
 class PublicDragons extends Component<PropsFromRedux>{
@@ -24,7 +24,6 @@ class PublicDragons extends Component<PropsFromRedux>{
                                 <PublicDragonRow dragon={dragon} />
                                 <hr />
                             </div>
-
                         )
                     })
                 }

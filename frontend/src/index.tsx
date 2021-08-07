@@ -17,7 +17,6 @@ import './index.css'
 const store = createStore(rootReducer,applyMiddleware(thunk))
 
 
-//type fix
 const AuthRoute = (props:RouteProps) =>{
     if (!store.getState().account.loggedIn){
         return <Redirect to={{pathname:'/'}} />
@@ -28,6 +27,7 @@ const AuthRoute = (props:RouteProps) =>{
     return <Route path={path} component={component}/>
 }
 
+type test = typeof fetchAuthenticated
 
 //need to fix
 store.dispatch<any>(fetchAuthenticated())

@@ -71,8 +71,6 @@ export default class PublicDragonRow extends Component<publicDragonsProps>{
                         <MatingOptions patronDragonId={this.props.dragon.dragonId}/>    :
                         <div></div>
                 }
-
-
             </div>
         )
     }

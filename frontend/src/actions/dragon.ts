@@ -1,6 +1,6 @@
 import { DRAGON} from "./type"
 import { BACKEND } from "../config"
-import { AppDispatch} from '..'
+import { AppDispatch} from '../index'
 
 
 export const fetchDragon = () => (dispatch:AppDispatch)  => {

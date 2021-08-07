@@ -1,6 +1,6 @@
 import { ACCOUNT } from "./type";
 import { BACKEND } from "../config";
-import { AppDispatch} from '..'
+import { AppDispatch} from '../index'
 
 interface userInfo{
     username:string,
@@ -86,12 +86,3 @@ export const logout = () => fectchFromAccount({
     ERROR_TYPE:ACCOUNT.FETCH_ERROR,
     SUCCESS_TYPE:ACCOUNT.FETCH_LOGOUT_SUCCESS
 })
-
-
-
-
-
-
-
-
-

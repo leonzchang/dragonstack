@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { fectchAccountDragons } from '../actions/accountDragons' 
 import AccountDragonRow from './AccountDragonRow'
-import { RootState } from '..'
+import { RootState } from '../index'
 import { Link } from 'react-router-dom'
 
 

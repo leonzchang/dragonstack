@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { fectchAccountInfo } from '../actions/accountInfo'
-import { RootState } from '..'
+import { RootState } from '../index'
 
 
 

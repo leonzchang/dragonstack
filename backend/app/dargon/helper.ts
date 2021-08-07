@@ -43,7 +43,7 @@ const  getDragonWithTraits =  ({ dragonId }: { dragonId: number }) => {
             traits: dragonTraits
         })
     })
-    // .catch(error => console.error(error))
+    .catch(error => { throw error} )
 }
 
 

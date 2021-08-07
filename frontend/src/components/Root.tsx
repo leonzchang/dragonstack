@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import Home from './Home'
 import AuthForm from './AuthForm'
-import { RootState } from '..'
+import { RootState } from '../index'
 
 
 class Root extends Component<PropsFromRedux>{

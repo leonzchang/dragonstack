@@ -1,6 +1,6 @@
 import { PUBLIC_DRAGONS } from "./type";
 import { BACKEND } from "../config";
-import { AppDispatch} from '..'
+import { AppDispatch} from '../index'
 
 
 export const fectchPublicDragons = () => (dispatch:AppDispatch) => {

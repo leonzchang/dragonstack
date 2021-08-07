@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
 import { connect, ConnectedProps } from 'react-redux'
-import { RootState } from '..'
+import { RootState } from '../index'
 import history from '../history'
 import { BACKEND } from '../config'
 
@@ -51,7 +51,6 @@ class MatingOptions extends Component<PropsFromRedux>{
             </div>
         )
     }
-
 }
 
 

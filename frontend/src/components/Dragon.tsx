@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { fetchDragon } from '../actions/dragon'
 import DragonAvatar from './DragonAvatar'
-import { RootState } from '..'
+import { RootState } from '../index'
 import { Button } from 'react-bootstrap'
 import fetchState from '../reducers/fetchState'
 

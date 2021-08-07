@@ -1,10 +1,10 @@
 import { GENERATION} from "./type"
 import { BACKEND } from "../config"
-import { AppDispatch} from '..'
+import { AppDispatch} from '../index'
 
 
 export const fetchGeneration = () => (dispatch:AppDispatch) => {
-    // dispatch({ type:GENERATION.FETCH })
+    dispatch({ type:GENERATION.FETCH })
 
     return fetch(`${BACKEND.ADDRESS}/generation`)
     .then(response => response.json())
