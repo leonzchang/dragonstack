@@ -2,7 +2,7 @@ import React from 'react'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { render } from 'react-dom'
-import thunk from 'redux-thunk'
+import thunk ,{ ThunkMiddleware }from 'redux-thunk'
 import { Router, Switch, Route, Redirect, RouteProps} from 'react-router-dom'
 import  rootReducer  from './reducers'
 import { fetchAuthenticated } from './actions/account'
@@ -14,8 +14,7 @@ import './index.css'
 
 
 
-const store = createStore(rootReducer,applyMiddleware(thunk))
-
+const store = createStore(rootReducer,applyMiddleware(thunk as ThunkMiddleware))
 
 const AuthRoute = (props:RouteProps) =>{
     if (!store.getState().account.loggedIn){
@@ -27,10 +26,8 @@ const AuthRoute = (props:RouteProps) =>{
     return <Route path={path} component={component}/>
 }
 
-type test = typeof fetchAuthenticated
 
-//need to fix
-store.dispatch<any>(fetchAuthenticated())
+store.dispatch(fetchAuthenticated())
     .then(()=>{
         render(
             <Provider store={store}>
@@ -47,7 +44,6 @@ store.dispatch<any>(fetchAuthenticated())
     })
 
 // store.subscribe(()=>console.log('store state update',store.getState()))
-
 
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
