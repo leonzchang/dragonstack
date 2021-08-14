@@ -7,7 +7,7 @@ module.exports = {
     //setting entry and output
     entry: "./src/index.tsx",
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "build"),
         //bundel.js vendor.js and prevent user browser cache when update
         filename: "[name].[hash].js",
     },

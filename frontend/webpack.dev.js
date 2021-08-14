@@ -16,7 +16,7 @@ module.exports = merge(common, {
     //set up webpack server
     devServer: {
         port: 1234,
-        contentBase: path.join(__dirname, "dist"),
+        contentBase: path.join(__dirname, "build"),
         historyApiFallback: true,
     },
 })
