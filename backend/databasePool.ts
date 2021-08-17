@@ -1,7 +1,7 @@
-import { Pool } from 'pg'
-import databaseConfiguration from './secrets/databaseConfiguration'
+import { Pool } from 'pg';
 
-const pool = new Pool(databaseConfiguration)
+import databaseConfiguration from './secrets/databaseConfiguration';
 
-export default pool
+const pool = new Pool(databaseConfiguration);
 
+export default pool;

@@ -1,34 +1,31 @@
-import React, { Component } from 'react'
-import { connect, ConnectedProps } from 'react-redux'
-import { fectchAccountInfo } from '../actions/accountInfo'
-import { RootState } from '../index'
+import React, { Component } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
+import { fectchAccountInfo } from '../actions/accountInfo';
+import { RootState } from '../index';
 
+class AccountInfo extends Component<PropsFromRedux> {
+  componentDidMount() {
+    this.props.fectchAccountInfo();
+  }
 
-class AccountInfo extends Component<PropsFromRedux>{
-    componentDidMount(){
-        this.props.fectchAccountInfo()
-    }
-
-    render(){
-        return(
-            <div>
-                <h3>Account Info</h3>
-                <div>Username: {this.props.accountInfo.username}</div>
-                <div>Balance: {this.props.accountInfo.balance}</div>
-            </div>
-        )
-    }
-
+  render() {
+    return (
+      <div className="account-info">
+        <span>Username: {this.props.accountInfo.username}</span>
+        <span>Balance: {this.props.accountInfo.balance}</span>
+      </div>
+    );
+  }
 }
 
-const mapStateToProps = (state:RootState) =>{
-    const accountInfo = state.accountInfo
-    
-    return {accountInfo}
-}
+const mapStateToProps = (state: RootState) => {
+  const accountInfo = state.accountInfo;
 
-const componetConnector = connect(mapStateToProps , { fectchAccountInfo })
-type PropsFromRedux = ConnectedProps<typeof componetConnector>
+  return { accountInfo };
+};
 
-export default componetConnector(AccountInfo)
+const componetConnector = connect(mapStateToProps, { fectchAccountInfo });
+type PropsFromRedux = ConnectedProps<typeof componetConnector>;
+
+export default componetConnector(AccountInfo);

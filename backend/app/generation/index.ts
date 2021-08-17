@@ -1,36 +1,37 @@
-import Dragon from '../dargon/index'
-import { REFRESH_RATE, SECONDS } from '../config'
+import { REFRESH_RATE, SECONDS } from '../config';
+import Dragon from '../dargon/index';
 
-const refreshRate = REFRESH_RATE * SECONDS
+const refreshRate = REFRESH_RATE * SECONDS;
 
 export default class Generation {
+  expiration: Date;
+  generationId?: number;
+  accountIds: Set<number>;
+  constructor() {
+    this.accountIds = new Set();
+    this.expiration = this.calculateExpiration();
+    this.generationId = undefined;
+  }
 
-    expiration: Date
-    generationId?: number
-    accountIds:Set<number>
-    constructor() {
-        this.accountIds = new Set()
-        this.expiration = this.calculateExpiration()
-        this.generationId = undefined
+  calculateExpiration() {
+    const expirationPeriod = Math.floor(Math.random() * (refreshRate / 2));
+
+    const msUntilExpiration =
+      Math.random() < 0.5 ? refreshRate - expirationPeriod : refreshRate + expirationPeriod;
+
+    return new Date(Date.now() + msUntilExpiration);
+  }
+
+  newDragon({ accountId }: { accountId: number }) {
+    if (new Date(Date.now()) > this.expiration) {
+      throw new Error(`This generation expired on ${this.expiration}`);
     }
 
-    calculateExpiration() {
-        const expirationPeriod = Math.floor(Math.random() * (refreshRate / 2))
+    if (this.accountIds.has(accountId))
+      throw new Error('You already have dragon from this generation');
 
-        const msUntilExpiration = Math.random() < 0.5 ? refreshRate - expirationPeriod : refreshRate + expirationPeriod
+    this.accountIds.add(accountId); //each account only can get one dragon on each generation
 
-        return new Date(Date.now() + msUntilExpiration)
-    }
-
-    newDragon({accountId}:{accountId:number}) {
-        if (new Date(Date.now()) > this.expiration) {
-            throw new Error(`This generation expired on ${this.expiration}`)
-        }
-
-        if (this.accountIds.has(accountId)) throw new Error('You already have dragon from this generation')
-        
-        this.accountIds.add(accountId)    //each account only can get one dragon on each generation 
-
-        return new Dragon({ generationId: this.generationId })
-    }
+    return new Dragon({ generationId: this.generationId });
+  }
 }

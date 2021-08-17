@@ -1,5 +1,5 @@
 export default {
-    fetching:"fetching",
-    error:'error',
-    success:'success'
-}
+  fetching: 'fetching',
+  error: 'error',
+  success: 'success',
+};

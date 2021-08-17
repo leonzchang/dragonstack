@@ -4,10 +4,22 @@ body {
   font-size: 20px;
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
 .logout-button {
   position: absolute;
   right: 30px;
   top: 30px;
+}
+.account-info {
+  position: absolute;
+  top: 30px;
+}
+.account-info span {
+  padding-right: 20px;
 }
 
 .dragon-avatar-image-wrapper {

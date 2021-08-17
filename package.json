@@ -1,0 +1,33 @@
+{
+  "name": "dragonstack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:leonzchang/dragonstack.git",
+  "author": "<bellerophon00530@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint . --ext ts --ext tsx --fix",
+    "format": "prettier --write \"**/*.(js|ts|tsx)\"",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.29.1",
+    "@typescript-eslint/parser": "^4.29.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.5"
+  },
+  "lint-staged":{
+    "**/*.(ts|tsx)":[
+      "yarn format",
+      "yarn lint"
+    ]
+  }
+}

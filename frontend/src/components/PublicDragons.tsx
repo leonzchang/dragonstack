@@ -1,48 +1,50 @@
-import React, { Component } from 'react'
-import { connect, ConnectedProps } from 'react-redux'
-import { fectchPublicDragons } from '../actions/publicDragons'
-import { fectchAccountDragons } from '../actions/accountDragons' 
-import PublicDragonRow from './PublicDragonRow'
-import { RootState } from '../index'
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 
-class PublicDragons extends Component<PropsFromRedux>{
-    componentDidMount(){
-        this.props.fectchPublicDragons()
-        this.props.fectchAccountDragons()
+import { fectchAccountDragons } from '../actions/accountDragons';
+import { fectchPublicDragons } from '../actions/publicDragons';
+import { RootState } from '../index';
+import Header from './Header';
+import PublicDragonRow from './PublicDragonRow';
+
+class PublicDragons extends Component<PropsFromRedux> {
+  componentDidMount() {
+    this.props.fectchPublicDragons();
+    this.props.fectchAccountDragons();
+  }
+
+  render() {
+    if (!this.props.account.loggedIn) {
+      return <Redirect to={{ pathname: '/' }} />;
     }
 
-    render(){
-        return(
-            <div>
-                <h3>Public Dragons</h3>
-                <Link to='/'>Home</Link>
-                {
-                    this.props.publicDragons.dragons?.map(dragon=>{
-                        return(
-                            <div key={dragon.dragonId}>
-                                <PublicDragonRow dragon={dragon} />
-                                <hr />
-                            </div>
-                        )
-                    })
-                }
+    return (
+      <div>
+        <Header />
+        <h3>Public Dragons</h3>
+        <Link to="/">Home</Link>
+        {this.props.publicDragons.dragons?.map((dragon) => {
+          return (
+            <div key={dragon.dragonId}>
+              <PublicDragonRow dragon={dragon} />
+              <hr />
             </div>
-        )
-    }
+          );
+        })}
+      </div>
+    );
+  }
 }
 
+const mapStateToProps = (state: RootState) => {
+  const { publicDragons, account } = state;
 
+  return { publicDragons, account };
+};
 
-const mapStateToProps = (state:RootState) =>{
-    const publicDragons = state.publicDragons
+const componetConnector = connect(mapStateToProps, { fectchPublicDragons, fectchAccountDragons });
 
-    return {publicDragons}
-}
+type PropsFromRedux = ConnectedProps<typeof componetConnector>;
 
-
-const componetConnector = connect(mapStateToProps, { fectchPublicDragons, fectchAccountDragons })
-
-type PropsFromRedux = ConnectedProps<typeof componetConnector>
-
-export default componetConnector(PublicDragons)
+export default componetConnector(PublicDragons);
