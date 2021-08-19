@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 
 import accountRounter from './api/account';
 import dragonRouter from './api/dragon';
@@ -25,7 +25,7 @@ app.use('/account', accountRounter);
 app.use('/dragon', dragonRouter);
 app.use('/generation', generationRouter);
 
-app.use((error: Error, req: Request, res: Response) => {
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   const statusCode = error.statusCode || 500;
 
   res.status(statusCode).json({

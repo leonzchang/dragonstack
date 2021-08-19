@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Button, FormControl, FormGroup } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { login, signup } from '../actions/account';
 import { RootState } from '../index';
+import { login, signup } from '../reducers/accountSlice';
 import fetchState from '../reducers/fetchState';
 
 class AuthForm extends Component<PropsFromRedux> {

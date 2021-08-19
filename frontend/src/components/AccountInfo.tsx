@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { fectchAccountInfo } from '../actions/accountInfo';
 import { RootState } from '../index';
+import { fectchAccountInfo } from '../reducers/accountInfoSlice';
 
 class AccountInfo extends Component<PropsFromRedux> {
   componentDidMount() {

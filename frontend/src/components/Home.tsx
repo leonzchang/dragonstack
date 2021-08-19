@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { fectchAccountDragons } from '../actions/accountDragons';
+import { fectchAccountDragons } from '../reducers/accountDragonsSlice';
 import Dragon from './Dragon';
 import Generation from './Generation';
 import Header from './Header';

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { fetchGeneration } from '../actions/generation';
 import { RootState } from '../index';
 import fetchState from '../reducers/fetchState';
+import { fetchGeneration } from '../reducers/generationSlice';
 
 const MINIMUN_DELAY = 3000;
 

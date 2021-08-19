@@ -34,30 +34,30 @@ interface reduxAccountDragonsState {
   status?: string;
 }
 
-const initialState = { dragons: [] };
+const initialState: reduxAccountDragonsState = { dragons: [] };
 
 const fectchPublicDragonsSlice = createSlice({
   name: 'publicDragons',
   initialState,
   reducers: {},
   extraReducers: {
-    [fectchPublicDragons.pending.type]: (state: reduxAccountDragonsState) => {
+    [fectchPublicDragons.pending.type]: (state) => {
       state.status = fetchState.fetching;
     },
-    [fectchPublicDragons.fulfilled.type]: (state: reduxAccountDragonsState, action) => {
-      if (action.type === 'error') {
+    [fectchPublicDragons.fulfilled.type]: (state, action) => {
+      if (action.payload.type === 'error') {
         state.status = fetchState.error;
-        state.message = action.message;
+        state.message = action.payload.message;
       } else {
         state.status = fetchState.success;
-        state.dragons = action.dragons;
+        state.dragons = action.payload.dragons;
       }
     },
-    [fectchPublicDragons.rejected.type]: (state: reduxAccountDragonsState, action) => {
+    [fectchPublicDragons.rejected.type]: (state, action) => {
       state.status = fetchState.error;
-      state.message = action.message;
+      state.message = action.error.message;
     },
   },
 });
 
-export default fectchPublicDragonsSlice;
+export default fectchPublicDragonsSlice.reducer;

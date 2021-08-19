@@ -1,20 +1,19 @@
 import './index.css';
 
+import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Redirect, Route, RouteProps, Router, Switch } from 'react-router-dom';
-import { applyMiddleware, createStore } from 'redux';
-import thunk, { ThunkMiddleware } from 'redux-thunk';
 
-import { fetchAuthenticated } from './actions/account';
 import AccountDragons from './components/AccountDragons';
 import PublicDragons from './components/PublicDragons';
 import Root from './components/Root';
 import history from './history';
 import rootReducer from './reducers';
+import { fetchAuthenticated } from './reducers/accountSlice';
 
-const store = createStore(rootReducer, applyMiddleware(thunk as ThunkMiddleware));
+const store = configureStore({ reducer: rootReducer });
 
 const AuthRoute = (props: RouteProps) => {
   if (!store.getState().account.loggedIn) {

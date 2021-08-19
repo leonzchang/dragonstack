@@ -17,31 +17,31 @@ interface reduxGenerationState extends generationType {
   status?: string;
 }
 
-const initialState = {};
+const initialState: reduxGenerationState = {};
 
 const fetchGenerationSlice = createSlice({
   name: 'generation',
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchGeneration.pending.type]: (state: reduxGenerationState) => {
+    [fetchGeneration.pending.type]: (state) => {
       state.status = fetchState.fetching;
     },
-    [fetchGeneration.fulfilled.type]: (state: reduxGenerationState, action) => {
-      if (action.type === 'error') {
+    [fetchGeneration.fulfilled.type]: (state, action) => {
+      if (action.payload.type === 'error') {
         state.status = fetchState.error;
-        state.message = action.message;
+        state.message = action.payload.message;
       } else {
         state.status = fetchState.success;
-        state.generationId = action.generation.generationId;
-        state.expiration = action.generation.expiration;
+        state.generationId = action.payload.generation.generationId;
+        state.expiration = action.payload.generation.expiration;
       }
     },
-    [fetchGeneration.rejected.type]: (state: reduxGenerationState, action) => {
+    [fetchGeneration.rejected.type]: (state, action) => {
       state.status = fetchState.error;
-      state.message = action.message;
+      state.message = action.error.message;
     },
   },
 });
 
-export default fetchGenerationSlice;
+export default fetchGenerationSlice.reducer;

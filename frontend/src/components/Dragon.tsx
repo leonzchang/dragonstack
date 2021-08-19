@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { fetchDragon } from '../actions/dragon';
 import { RootState } from '../index';
+import { fetchDragon } from '../reducers/dragonSlice';
 import fetchState from '../reducers/fetchState';
 import DragonAvatar from './DragonAvatar';
 
@@ -13,7 +13,7 @@ class Dragon extends Component<PropsFromRedux> {
 
     if (dragon.status === fetchState.error) return <span>{dragon.message}</span>;
 
-    return <DragonAvatar dragon={dragon} />;
+    return <DragonAvatar dragon={dragon.dragonInfo} />;
   }
 
   render() {

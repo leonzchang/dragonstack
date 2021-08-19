@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { logout } from '../actions/account';
+import { logout } from '../reducers/accountSlice';
 import AccountInfo from './AccountInfo';
 
 class Header extends Component<PropsFromRedux> {

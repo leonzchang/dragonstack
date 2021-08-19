@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
-import account from './account';
-import accountDragons from './accountDragons';
-import accountInfo from './accountInfo';
-import dragon from './dragon';
-import generation from './generation';
-import publicDragons from './publicDragons';
+import accountDragons from './accountDragonsSlice';
+import accountInfo from './accountInfoSlice';
+import account from './accountSlice';
+import dragon from './dragonSlice';
+import generation from './generationSlice';
+import publicDragons from './publicDragonsSlice';
 
 export default combineReducers({
   account,

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
-import { fectchAccountDragons } from '../actions/accountDragons';
-import { fectchPublicDragons } from '../actions/publicDragons';
 import { RootState } from '../index';
+import { fectchAccountDragons } from '../reducers/accountDragonsSlice';
+import { fectchPublicDragons } from '../reducers/publicDragonsSlice';
 import Header from './Header';
 import PublicDragonRow from './PublicDragonRow';
 
