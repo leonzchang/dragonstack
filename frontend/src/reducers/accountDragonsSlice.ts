@@ -35,11 +35,12 @@ const fectchAccountDragonsSlice = createSlice({
   name: 'accountDragon',
   initialState,
   reducers: {},
-  extraReducers: {
-    [fectchAccountDragons.pending.type]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(fectchAccountDragons.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [fectchAccountDragons.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(fectchAccountDragons.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -48,11 +49,11 @@ const fectchAccountDragonsSlice = createSlice({
         state.message = action.payload.message;
         state.dragons = action.payload.dragons;
       }
-    },
-    [fectchAccountDragons.rejected.type]: (state, action) => {
+    });
+    builder.addCase(fectchAccountDragons.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
+    });
   },
 });
 

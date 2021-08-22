@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { BACKEND } from '../config';
 import history from '../history';
@@ -10,8 +10,14 @@ interface mateInputType {
   matronDragonId: number;
   patronDragonId: number;
 }
-class MatingOptions extends Component<PropsFromRedux> {
-  mate =
+interface matingOptionsProps {
+  patronDragonId: number;
+}
+
+const MatingOptions = (props: matingOptionsProps) => {
+  const accountDragons = useSelector((store: RootState) => store.accountDragons);
+
+  const mate =
     ({ matronDragonId, patronDragonId }: mateInputType) =>
     () => {
       fetch(`${BACKEND.ADDRESS}/dragon/mate`, {
@@ -31,39 +37,27 @@ class MatingOptions extends Component<PropsFromRedux> {
         .catch((error) => alert(error.message));
     };
 
-  render() {
-    return (
-      <div>
-        <h4>Pick one of your dragons to mate with: </h4>
-        {this.props.accountDragons.dragons?.map((dragon) => {
-          const { dragonId, generationId, nickname } = dragon;
+  return (
+    <div>
+      <h4>Pick one of your dragons to mate with: </h4>
+      {accountDragons.dragons?.map((dragon) => {
+        const { dragonId, generationId, nickname } = dragon;
 
-          return (
-            <span key={dragonId}>
-              <Button
-                onClick={this.mate({
-                  patronDragonId: this.props.patronDragonId,
-                  matronDragonId: dragonId,
-                })}
-              >
-                G{generationId}.I{dragonId}. {nickname}
-              </Button>{' '}
-            </span>
-          );
-        })}
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state: RootState) => {
-  const accountDragons = state.accountDragons;
-
-  return { accountDragons };
+        return (
+          <span key={dragonId}>
+            <Button
+              onClick={mate({
+                patronDragonId: props.patronDragonId,
+                matronDragonId: dragonId,
+              })}
+            >
+              G{generationId}.I{dragonId}. {nickname}
+            </Button>{' '}
+          </span>
+        );
+      })}
+    </div>
+  );
 };
 
-const componetConnector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof componetConnector> & { patronDragonId: number };
-
-export default componetConnector(MatingOptions);
+export default MatingOptions;

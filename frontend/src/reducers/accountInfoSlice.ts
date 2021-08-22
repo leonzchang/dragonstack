@@ -20,11 +20,12 @@ const fetchAccountInfoSlice = createSlice({
   name: 'accountInfo',
   initialState,
   reducers: {},
-  extraReducers: {
-    [fectchAccountInfo.pending.type]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(fectchAccountInfo.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [fectchAccountInfo.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(fectchAccountInfo.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -34,11 +35,11 @@ const fetchAccountInfoSlice = createSlice({
         state.balance = action.payload.info.balance;
         state.username = action.payload.info.username;
       }
-    },
-    [fectchAccountInfo.rejected.type]: (state, action) => {
+    });
+    builder.addCase(fectchAccountInfo.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
+    });
   },
 });
 

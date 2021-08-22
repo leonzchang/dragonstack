@@ -1,31 +1,23 @@
-import React, { Component } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../index';
 import { fectchAccountInfo } from '../reducers/accountInfoSlice';
 
-class AccountInfo extends Component<PropsFromRedux> {
-  componentDidMount() {
-    this.props.fectchAccountInfo();
-  }
+const AccountInfo = () => {
+  const accountInfo = useSelector((store: RootState) => store.accountInfo);
+  const dispatch = useDispatch();
 
-  render() {
-    return (
-      <div className="account-info">
-        <span>Username: {this.props.accountInfo.username}</span>
-        <span>Balance: {this.props.accountInfo.balance}</span>
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    dispatch(fectchAccountInfo());
+  }, []);
 
-const mapStateToProps = (state: RootState) => {
-  const accountInfo = state.accountInfo;
-
-  return { accountInfo };
+  return (
+    <div className="account-info">
+      <span>Username: {accountInfo.username}</span>
+      <span>Balance: {accountInfo.balance}</span>
+    </div>
+  );
 };
 
-const componetConnector = connect(mapStateToProps, { fectchAccountInfo });
-type PropsFromRedux = ConnectedProps<typeof componetConnector>;
-
-export default componetConnector(AccountInfo);
+export default AccountInfo;

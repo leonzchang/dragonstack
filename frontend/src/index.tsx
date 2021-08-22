@@ -40,7 +40,7 @@ store.dispatch(fetchAuthenticated()).then(() => {
   );
 });
 
-// store.subscribe(()=>console.log('store state update',store.getState()))
+// store.subscribe(() => console.log('store state update', store.getState()));
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
