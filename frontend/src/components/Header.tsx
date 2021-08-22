@@ -1,25 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { logout } from '../reducers/accountSlice';
 import AccountInfo from './AccountInfo';
 
-class Header extends Component<PropsFromRedux> {
-  render() {
-    return (
-      <div className="header">
-        <AccountInfo />
-        <Button className="logout-button" onClick={this.props.logout}>
-          Log Out
-        </Button>
-      </div>
-    );
-  }
-}
+const Header = () => {
+  const dispatch = useDispatch();
 
-const componetConnector = connect(null, { logout });
+  return (
+    <div className="header">
+      <AccountInfo />
+      <Button className="logout-button" onClick={() => dispatch(logout())}>
+        Log Out
+      </Button>
+    </div>
+  );
+};
 
-type PropsFromRedux = ConnectedProps<typeof componetConnector>;
-
-export default componetConnector(Header);
+export default Header;

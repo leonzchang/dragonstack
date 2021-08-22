@@ -59,11 +59,12 @@ const fectchAccountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {},
-  extraReducers: {
-    [signup.pending.type]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(signup.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [signup.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(signup.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -72,15 +73,16 @@ const fectchAccountSlice = createSlice({
         state.message = action.payload.message;
         state.loggedIn = true;
       }
-    },
-    [signup.rejected.type]: (state, action) => {
+    });
+    builder.addCase(signup.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
-    [login.pending.type]: (state) => {
+    });
+    builder.addCase(login.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [login.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(login.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -89,15 +91,16 @@ const fectchAccountSlice = createSlice({
         state.message = action.payload.message;
         state.loggedIn = true;
       }
-    },
-    [login.rejected.type]: (state, action) => {
+    });
+    builder.addCase(login.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
-    [fetchAuthenticated.pending.type]: (state) => {
+    });
+    builder.addCase(fetchAuthenticated.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [fetchAuthenticated.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(fetchAuthenticated.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -106,15 +109,16 @@ const fectchAccountSlice = createSlice({
         state.message = action.payload.message;
         state.loggedIn = action.payload.authenticated;
       }
-    },
-    [fetchAuthenticated.rejected.type]: (state, action) => {
+    });
+    builder.addCase(fetchAuthenticated.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
-    [logout.pending.type]: (state) => {
+    });
+    builder.addCase(logout.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [logout.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(logout.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -123,11 +127,11 @@ const fectchAccountSlice = createSlice({
         state.message = action.payload.message;
         state.loggedIn = false;
       }
-    },
-    [logout.rejected.type]: (state, action) => {
+    });
+    builder.addCase(logout.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
+    });
   },
 });
 

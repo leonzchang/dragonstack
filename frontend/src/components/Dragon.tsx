@@ -1,40 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../index';
 import { fetchDragon } from '../reducers/dragonSlice';
 import fetchState from '../reducers/fetchState';
 import DragonAvatar from './DragonAvatar';
 
-class Dragon extends Component<PropsFromRedux> {
-  get DragonView() {
-    const { dragon } = this.props; //each account only can get one dragon on each generation
+const Dragon = () => {
+  const dragon = useSelector((store: RootState) => store.dragon);
+  const dispatch = useDispatch();
 
+  const DragonView = () => {
     if (dragon.status === fetchState.error) return <span>{dragon.message}</span>;
 
     return <DragonAvatar dragon={dragon.dragonInfo} />;
-  }
+  };
 
-  render() {
-    return (
-      <div>
-        <Button onClick={this.props.fetchDragon}>New Dragon</Button>
-        <br />
-        {this.DragonView}
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state: RootState) => {
-  const dragon = state.dragon;
-
-  return { dragon };
+  return (
+    <div>
+      <Button onClick={() => dispatch(fetchDragon())}>New Dragon</Button>
+      <br />
+      {DragonView()}
+    </div>
+  );
 };
 
-const componetConnector = connect(mapStateToProps, { fetchDragon });
-
-type PropsFromRedux = ConnectedProps<typeof componetConnector>;
-
-export default componetConnector(Dragon);
+export default Dragon;

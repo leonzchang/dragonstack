@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { patchy, plain, skinny, slender, sporty, spotted, stocky, striped } from '../assets/index';
 
@@ -43,11 +43,11 @@ const propertyMap: propertyMapType = {
   size: { small: 100, medium: 140, large: 180, enormous: 220 },
 };
 
-export default class DragonAvatar extends Component<dragonProps> {
-  get DragonImage() {
+const DragonAvatar = (props: dragonProps) => {
+  const DragonImage = () => {
     const dragonPropertyMap: dragonPropertyMapType = {};
 
-    this.props.dragon.traits?.forEach((trait) => {
+    props.dragon.traits?.forEach((trait) => {
       const { traitType, traitValue } = trait;
 
       dragonPropertyMap[traitType] = propertyMap[traitType][traitValue];
@@ -63,20 +63,20 @@ export default class DragonAvatar extends Component<dragonProps> {
         <img src={build} className="dragon-avatar-image" style={{ ...sizing }} />
       </div>
     );
-  }
+  };
 
-  render() {
-    const { dragonId, generationId, traits } = this.props.dragon;
+  const { dragonId, generationId, traits } = props.dragon;
 
-    if (!dragonId) return <div />;
+  if (!dragonId) return <div />;
 
-    return (
-      <div>
-        <span>G{generationId}</span>
-        <span>I{dragonId}</span>
-        {traits?.map((trait) => trait.traitValue).join(', ')}
-        {this.DragonImage}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <span>G{generationId}</span>
+      <span>I{dragonId}</span>
+      {traits?.map((trait) => trait.traitValue).join(', ')}
+      {DragonImage()}
+    </div>
+  );
+};
+
+export default DragonAvatar;

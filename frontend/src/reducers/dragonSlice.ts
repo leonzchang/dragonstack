@@ -3,10 +3,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BACKEND } from '../config';
 import fetchState from './fetchState';
 
+interface fetchDragonJson {
+  type: string;
+  message: string;
+  dragon: dragonType;
+}
+
 export const fetchDragon = createAsyncThunk('dragon/fetchDragon', async () => {
-  return await fetch(`${BACKEND.ADDRESS}/dragon/new`, {
-    credentials: 'include',
-  }).then((response) => response.json());
+  const response = await fetch(`${BACKEND.ADDRESS}/dragon/new`, { credentials: 'include' });
+  const json: fetchDragonJson = await response.json();
+  return json;
 });
 
 interface traitsType {
@@ -37,11 +43,12 @@ const fetchDragonSlice = createSlice({
   name: 'dragon',
   initialState,
   reducers: {},
-  extraReducers: {
-    [fetchDragon.pending.type]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(fetchDragon.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [fetchDragon.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(fetchDragon.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -56,11 +63,11 @@ const fetchDragonSlice = createSlice({
         state.dragonInfo.saleValue = action.payload.dragon.saleValue;
         state.dragonInfo.sireValue = action.payload.dragon.sireValue;
       }
-    },
-    [fetchDragon.rejected.type]: (state, action) => {
+    });
+    builder.addCase(fetchDragon.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
+    });
   },
 });
 

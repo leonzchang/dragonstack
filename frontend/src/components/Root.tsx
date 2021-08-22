@@ -1,24 +1,14 @@
-import React, { Component } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../index';
 import AuthForm from './AuthForm';
 import Home from './Home';
 
-class Root extends Component<PropsFromRedux> {
-  render() {
-    return this.props.account.loggedIn ? <Home /> : <AuthForm />;
-  }
-}
+const Root = () => {
+  const account = useSelector((store: RootState) => store.account);
 
-const mapStateToProps = (state: RootState) => {
-  const account = state.account;
-
-  return { account };
+  return account.loggedIn ? <Home /> : <AuthForm />;
 };
 
-const componetConnector = connect(mapStateToProps); //no mapDispatchToProps
-
-type PropsFromRedux = ConnectedProps<typeof componetConnector>;
-
-export default componetConnector(Root);
+export default Root;

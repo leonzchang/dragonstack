@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 import { BACKEND } from '../config';
@@ -22,59 +22,66 @@ interface dragonProps {
   };
 }
 
-export default class AccountDragonRow extends Component<dragonProps> {
-  state = {
-    nickname: this.props.dragon.nickname,
-    isPublic: this.props.dragon.isPublic,
-    saleValue: this.props.dragon.saleValue,
-    sireValue: this.props.dragon.sireValue,
+interface Istate {
+  nickname: string;
+  isPublic: boolean;
+  saleValue: number;
+  sireValue: number;
+  edit: boolean;
+}
+
+const AccountDragonRow = (props: dragonProps) => {
+  const [state, setState] = useState<Istate>({
+    nickname: props.dragon.nickname,
+    isPublic: props.dragon.isPublic,
+    saleValue: props.dragon.saleValue,
+    sireValue: props.dragon.sireValue,
     edit: false,
+  });
+
+  const updateNickname = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ ...state, nickname: event.target.value });
   };
 
-  updateNickname = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ nickname: event.target.value });
+  const updateSaleValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ ...state, saleValue: event.target.valueAsNumber });
   };
 
-  updateSaleValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ saleValue: event.target.value });
+  const updateSireValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ ...state, sireValue: event.target.valueAsNumber });
   };
 
-  updateSireValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ sireValue: event.target.value });
+  const updateIsPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ ...state, isPublic: event.target.checked });
   };
 
-  updateIsPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('state', this.state);
-    this.setState({ isPublic: event.target.checked });
+  const toggleEdit = () => {
+    setState({ ...state, edit: !state.edit });
   };
 
-  toggleEdit = () => {
-    this.setState({ edit: !this.state.edit });
-  };
-
-  toggleCancel = () => {
-    this.setState({
-      edit: !this.state.edit,
-      nickname: this.props.dragon.nickname,
-      isPublic: this.props.dragon.isPublic,
-      saleValue: this.props.dragon.saleValue,
+  const toggleCancel = () => {
+    setState({
+      ...state,
+      edit: !state.edit,
+      nickname: props.dragon.nickname,
+      isPublic: props.dragon.isPublic,
+      saleValue: props.dragon.saleValue,
     });
   };
 
-  save = () => {
-    console.log('state', this.state);
-    if (this.state.isPublic && this.state.saleValue === 0) {
+  const save = () => {
+    if (state.isPublic && state.saleValue === 0) {
       alert("sale value hasn't been given");
     } else {
       fetch(`${BACKEND.ADDRESS}/dragon/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          dragonId: this.props.dragon.dragonId,
-          nickname: this.state.nickname,
-          isPublic: this.state.isPublic,
-          saleValue: this.state.saleValue,
-          sireValue: this.state.sireValue,
+          dragonId: props.dragon.dragonId,
+          nickname: state.nickname,
+          isPublic: state.isPublic,
+          saleValue: state.saleValue,
+          sireValue: state.sireValue,
         }),
       })
         .then((response) => response.json())
@@ -82,72 +89,66 @@ export default class AccountDragonRow extends Component<dragonProps> {
           if (json.type === 'error') {
             alert(json.message);
           } else {
-            this.toggleEdit();
+            toggleEdit();
           }
         })
         .catch((error) => alert(error.message));
     }
   };
 
-  get SaveButton() {
+  const SaveButton = () => {
     return (
       <>
-        <Button onClick={this.save}>Save</Button>{' '}
-        <Button onClick={this.toggleCancel}>Cancel</Button>
+        <Button onClick={save}>Save</Button> <Button onClick={toggleCancel}>Cancel</Button>
       </>
     );
-  }
+  };
 
-  get EditButton() {
-    return <Button onClick={this.toggleEdit}>Edit</Button>;
-  }
+  const EditButton = () => {
+    return <Button onClick={toggleEdit}>Edit</Button>;
+  };
 
-  render() {
-    return (
+  return (
+    <div>
+      <input type="text" value={state.nickname} onChange={updateNickname} disabled={!state.edit} />
+      <br />
+      <DragonAvatar dragon={props.dragon} />
       <div>
-        <input
-          type="text"
-          value={this.state.nickname}
-          onChange={this.updateNickname}
-          disabled={!this.state.edit}
-        />
-        <br />
-        <DragonAvatar dragon={this.props.dragon} />
-        <div>
-          <span>
-            Sale Value:{' '}
-            <input
-              className="account-draong-row-input"
-              type="number"
-              disabled={!this.state.edit}
-              value={this.state.saleValue}
-              onChange={this.updateSaleValue}
-              min={0}
-            />
-          </span>{' '}
-          <span>
-            Sire Value:{' '}
-            <input
-              className="account-draong-row-input"
-              type="number"
-              disabled={!this.state.edit}
-              value={this.state.sireValue}
-              onChange={this.updateSireValue}
-              min={0}
-            />
-          </span>{' '}
-          <span>
-            Public:{' '}
-            <input
-              type="checkbox"
-              disabled={!this.state.edit}
-              checked={this.state.isPublic}
-              onChange={this.updateIsPublic}
-            />
-          </span>{' '}
-          {this.state.edit ? this.SaveButton : this.EditButton}
-        </div>
+        <span>
+          Sale Value:{' '}
+          <input
+            className="account-draong-row-input"
+            type="number"
+            disabled={!state.edit}
+            value={state.saleValue}
+            onChange={updateSaleValue}
+            min={0}
+          />
+        </span>{' '}
+        <span>
+          Sire Value:{' '}
+          <input
+            className="account-draong-row-input"
+            type="number"
+            disabled={!state.edit}
+            value={state.sireValue}
+            onChange={updateSireValue}
+            min={0}
+          />
+        </span>{' '}
+        <span>
+          Public:{' '}
+          <input
+            type="checkbox"
+            disabled={!state.edit}
+            checked={state.isPublic}
+            onChange={updateIsPublic}
+          />
+        </span>{' '}
+        {state.edit ? SaveButton() : EditButton()}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default AccountDragonRow;

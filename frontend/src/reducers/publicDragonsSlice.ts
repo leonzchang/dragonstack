@@ -3,12 +3,18 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BACKEND } from '../config';
 import fetchState from './fetchState';
 
+interface fectchPublicDragonsJson {
+  type: string;
+  message: string;
+  dragons: dragonType[];
+}
+
 export const fectchPublicDragons = createAsyncThunk(
   'publicDragons/fectchPublicDragons',
   async () => {
-    return await fetch(`${BACKEND.ADDRESS}/dragon/public-dragons`).then((response) =>
-      response.json()
-    );
+    const response = await fetch(`${BACKEND.ADDRESS}/dragon/public-dragons`);
+    const json: fectchPublicDragonsJson = await response.json();
+    return json;
   }
 );
 
@@ -40,11 +46,12 @@ const fectchPublicDragonsSlice = createSlice({
   name: 'publicDragons',
   initialState,
   reducers: {},
-  extraReducers: {
-    [fectchPublicDragons.pending.type]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(fectchPublicDragons.pending, (state) => {
       state.status = fetchState.fetching;
-    },
-    [fectchPublicDragons.fulfilled.type]: (state, action) => {
+    });
+
+    builder.addCase(fectchPublicDragons.fulfilled, (state, action) => {
       if (action.payload.type === 'error') {
         state.status = fetchState.error;
         state.message = action.payload.message;
@@ -52,11 +59,11 @@ const fectchPublicDragonsSlice = createSlice({
         state.status = fetchState.success;
         state.dragons = action.payload.dragons;
       }
-    },
-    [fectchPublicDragons.rejected.type]: (state, action) => {
+    });
+    builder.addCase(fectchPublicDragons.rejected, (state, action) => {
       state.status = fetchState.error;
       state.message = action.error.message;
-    },
+    });
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 import { BACKEND } from '../config';
@@ -21,15 +21,19 @@ interface publicDragonsProps {
   dragon: dragonInfo;
 }
 
-export default class PublicDragonRow extends Component<publicDragonsProps> {
-  state = { displayMatingOptions: false };
+interface Istate {
+  displayMatingOptions: boolean;
+}
 
-  toggleDisplayMatingOptions = () => {
-    this.setState({ displayMatingOptions: !this.state.displayMatingOptions });
+const PublicDragonRow = (props: publicDragonsProps) => {
+  const [state, setState] = useState<Istate>({ displayMatingOptions: false });
+
+  const toggleDisplayMatingOptions = () => {
+    setState({ displayMatingOptions: !state.displayMatingOptions });
   };
 
-  buy = () => {
-    const { dragonId, saleValue } = this.props.dragon;
+  const buy = () => {
+    const { dragonId, saleValue } = props.dragon;
 
     fetch(`${BACKEND.ADDRESS}/dragon/buy`, {
       method: 'POST',
@@ -48,26 +52,25 @@ export default class PublicDragonRow extends Component<publicDragonsProps> {
       .catch((error) => alert(error.message));
   };
 
-  render() {
-    return (
+  return (
+    <div>
+      <div>{props.dragon.nickname}</div>
+      <DragonAvatar dragon={props.dragon} />
       <div>
-        <div>{this.props.dragon.nickname}</div>
-        <DragonAvatar dragon={this.props.dragon} />
-        <div>
-          <span>Sale Value: {this.props.dragon.saleValue}</span>
-          {' | '}
-          <span>Sire Value: {this.props.dragon.sireValue}</span>
-        </div>
-        <br />
-        <Button onClick={this.buy}>Buy</Button>{' '}
-        <Button onClick={this.toggleDisplayMatingOptions}>Sire</Button>
-        <br />
-        {this.state.displayMatingOptions ? (
-          <MatingOptions patronDragonId={this.props.dragon.dragonId} />
-        ) : (
-          <div></div>
-        )}
+        <span>Sale Value: {props.dragon.saleValue}</span>
+        {' | '}
+        <span>Sire Value: {props.dragon.sireValue}</span>
       </div>
-    );
-  }
-}
+      <br />
+      <Button onClick={buy}>Buy</Button> <Button onClick={toggleDisplayMatingOptions}>Sire</Button>
+      <br />
+      {state.displayMatingOptions ? (
+        <MatingOptions patronDragonId={props.dragon.dragonId} />
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+};
+
+export default PublicDragonRow;

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
 import { RootState } from '../index';
@@ -8,43 +8,35 @@ import { fectchPublicDragons } from '../reducers/publicDragonsSlice';
 import Header from './Header';
 import PublicDragonRow from './PublicDragonRow';
 
-class PublicDragons extends Component<PropsFromRedux> {
-  componentDidMount() {
-    this.props.fectchPublicDragons();
-    this.props.fectchAccountDragons();
+const PublicDragons = () => {
+  const account = useSelector((store: RootState) => store.account);
+  const publicDragons = useSelector((store: RootState) => store.publicDragons);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fectchPublicDragons());
+    dispatch(fectchAccountDragons());
+  }, []);
+
+  if (!account.loggedIn) {
+    return <Redirect to={{ pathname: '/' }} />;
   }
 
-  render() {
-    if (!this.props.account.loggedIn) {
-      return <Redirect to={{ pathname: '/' }} />;
-    }
-
-    return (
-      <div>
-        <Header />
-        <h3>Public Dragons</h3>
-        <Link to="/">Home</Link>
-        {this.props.publicDragons.dragons?.map((dragon) => {
-          return (
-            <div key={dragon.dragonId}>
-              <PublicDragonRow dragon={dragon} />
-              <hr />
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state: RootState) => {
-  const { publicDragons, account } = state;
-
-  return { publicDragons, account };
+  return (
+    <div>
+      <Header />
+      <h3>Public Dragons</h3>
+      <Link to="/">Home</Link>
+      {publicDragons.dragons?.map((dragon) => {
+        return (
+          <div key={dragon.dragonId}>
+            <PublicDragonRow dragon={dragon} />
+            <hr />
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
-const componetConnector = connect(mapStateToProps, { fectchPublicDragons, fectchAccountDragons });
-
-type PropsFromRedux = ConnectedProps<typeof componetConnector>;
-
-export default componetConnector(PublicDragons);
+export default PublicDragons;
