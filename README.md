@@ -1,6 +1,6 @@
 # DragonStack
 A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTful API, authentication to interact with dragons. 
-### [DEMO](http://140.120.182.168/)
+### [DEMO](http://140.120.182.108/)
 Ideas on the Udemy course: [Master Full-Stack Web Development | Node, SQL, React, & More](https://www.udemy.com/course/full-stack/)
 # Getting Started
 
