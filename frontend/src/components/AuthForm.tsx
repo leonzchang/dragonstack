@@ -10,12 +10,15 @@ interface Istate {
   username: string;
   password: string;
   buttonClicked: boolean;
+  usernameVaild: boolean;
+  passwordValid: boolean;
 }
 
 const AuthForm = () => {
   const account = useSelector((store: RootState) => store.account);
   const dispatch = useDispatch();
-  const [state, setState] = useState<Istate>({ username: '', password: '', buttonClicked: false });
+  const [state, setState] = useState<Istate>({ username: '', password: '', buttonClicked: false, usernameVaild: false, passwordValid: false });
+
 
   const updateUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState({ ...state, username: event.target.value });
@@ -26,22 +29,37 @@ const AuthForm = () => {
   };
 
   const handleSignup = () => {
-    setState({ ...state, buttonClicked: true });
-
     const { username, password } = state;
-    if ( username.length || password.length === 0 ){
-      alert('username / password is required!')
-    }else{
+    
+    if ( username.length !== 0 && password.length !== 0){
+      setState({ ...state, buttonClicked: true });
       dispatch(signup({ username, password }));
+    }else{
+      if ( username.length === 0 && password.length === 0 ){
+        setState({ ...state, usernameVaild: true , passwordValid: true });
+      }else if (username.length === 0 && password.length !== 0){
+        setState({ ...state, usernameVaild: true });
+      }else if  (username.length !== 0 && password.length === 0){
+        setState({ ...state, passwordValid: true });
+      }
     }
   };
 
   const handleLogin = () => {
-    setState({ ...state, buttonClicked: true });
-
     const { username, password } = state;
-
-    dispatch(login({ username, password }));
+    
+    if ( username.length !== 0 && password.length !== 0){
+      setState({ ...state, buttonClicked: true });
+      dispatch(login({ username, password }));
+    }else{
+      if ( username.length === 0 && password.length === 0 ){
+        setState({ ...state, usernameVaild: true , passwordValid: true });
+      }else if (username.length === 0 && password.length !== 0){
+        setState({ ...state, usernameVaild: true });
+      }else if  (username.length !== 0 && password.length === 0){
+        setState({ ...state, passwordValid: true });
+      }
+    }
   };
 
   const Error = () => {
@@ -60,6 +78,7 @@ const AuthForm = () => {
           value={state.username}
           placeholder="username"
           onChange={updateUsername}
+          isInvalid={state.usernameVaild}
         />
       </FormGroup>
       <br />
@@ -69,6 +88,7 @@ const AuthForm = () => {
           value={state.password}
           placeholder="password"
           onChange={updatePassword}
+          isInvalid={state.passwordValid}
         />
       </FormGroup>
       <br />
