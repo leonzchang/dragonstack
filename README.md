@@ -1,6 +1,6 @@
 # DragonStack
 A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTful API, authentication to interact with dragons. 
-### [DEMO](https://dragonstack-leonzchang.vercel.app/)
+### [DEMO](http://140.120.182.108/)
 
 # Getting Started
 
