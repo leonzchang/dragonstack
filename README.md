@@ -1,6 +1,6 @@
 # DragonStack
 A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTful API, authentication to interact with dragons. 
-### [DEMO](http://140.120.182.108/)
+### [DEMO](https://dragonstackfront.herokuapp.com/)
 
 # Getting Started
 
