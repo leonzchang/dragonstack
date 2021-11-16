@@ -29,8 +29,11 @@ const AuthForm = () => {
     setState({ ...state, buttonClicked: true });
 
     const { username, password } = state;
-
-    dispatch(signup({ username, password }));
+    if ( username.length || password.length === 0 ){
+      alert('username / password is required!')
+    }else{
+      dispatch(signup({ username, password }));
+    }
   };
 
   const handleLogin = () => {
