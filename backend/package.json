@@ -7,6 +7,7 @@
     "dev": "nodemon ./bin/server.ts",
     "configure": "./bin/configure_db.sh",
     "configure-dev": "yarn run configure && yarn run dev",
+    "run-dev": "ts-node ./bin/insertTraits.ts && yarn run dev",
     "build": "tsc --project ./"
   },
   "license": "MIT",
