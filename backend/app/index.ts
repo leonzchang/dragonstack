@@ -17,7 +17,7 @@ const engine = new GenerationEngine();
 
 app.locals.engine = engine;
 
-app.use(cors({ origin: 'http://localhost:1234', credentials: true }));
+app.use(cors({ origin: `http://${process.env.FRONTEND_URL}:${process.env.FRONTEND_PORT}`, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

@@ -1,6 +1,5 @@
 const BACKEND = {
-  // ADDRESS: 'http://localhost:3000',
-  ADDRESS: 'https://dragonstackapi.herokuapp.com'
+  ADDRESS: `http://${process.env.BACKEND_URL}:${process.env.BACKEND_PORT}`,
 };
 
 export { BACKEND };

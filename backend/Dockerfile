@@ -1,5 +1,5 @@
 FROM node:latest
-MAINTAINER leonz
+LABEL maintainer = "leonz"
 
 WORKDIR /dragonstack-api
 

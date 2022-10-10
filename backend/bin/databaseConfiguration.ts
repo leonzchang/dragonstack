@@ -3,5 +3,5 @@ export default {
   host: process.env.PG_DB_URL,
   database: process.env.PG_DB_NAME,
   password: process.env.PG_USER_PWD,
-  port: 5432,
+  port: Number(process.env.PG_DB_PORT),
 };
