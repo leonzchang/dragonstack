@@ -20,7 +20,7 @@ module.exports = merge(common, {
   devServer: {
     // port: 1234,
     // for contarner 
-    host: '0.0.0.0', // lets the server listen for requests from the network, not just localhost.
+    // host: '0.0.0.0', // lets the server listen for requests from the network, not just localhost.
     port: process.env.FRONTEND_PORT,
     contentBase: path.join(__dirname, 'build'),
     historyApiFallback: true,
