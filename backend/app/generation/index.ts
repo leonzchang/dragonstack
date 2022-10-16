@@ -1,7 +1,7 @@
-import { REFRESH_RATE, SECONDS } from '../config';
+import { REFRESH_RATE, HOURS } from '../config';
 import Dragon from '../dargon/index';
 
-const refreshRate = REFRESH_RATE * SECONDS;
+const refreshRate = REFRESH_RATE * HOURS;
 
 export default class Generation {
   expiration: Date;
