@@ -1,0 +1,4 @@
+set dotenv-load
+
+local-mono:
+    RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds mono

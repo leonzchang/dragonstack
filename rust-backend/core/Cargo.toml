@@ -1,0 +1,18 @@
+[package]
+name = "ds-core"
+version = "0.1.0"
+authors = ["Leonz Chang <bellerophon00530@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.17"
+rand = "0.8.5"
+base64 = "0.13.1"
+once_cell = "1.13.0"
+toml = "0.5.9"
+anyhow = "1.0.66"
+chrono = { version = "0.4.22", features = ["serde"] }
+sqlx = { version = "0.6.2", default-features = false, features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "chrono", "json", "bigdecimal", "decimal", "bit-vec", "any", "migrate"] }
+serde = { version = "1.0.147", features = ["derive"] }

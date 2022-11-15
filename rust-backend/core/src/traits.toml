@@ -1,0 +1,35 @@
+[[types]]
+kind = "BackgroundColor"
+values = [  
+    "black",
+    "white",
+    "green",
+    "blue"
+]
+
+[[types]]
+kind = "Pattern"
+values = [
+    "plain",
+    "striped",
+    "spotted",
+    "patchy"
+]
+
+[[types]]
+kind = "Build"
+values = [
+    "slender",
+    "stocky",
+    "sporty",
+    "skinny"
+]
+
+[[types]]
+kind = "Size"
+values = [
+    "small",
+    "medium",
+    "large",
+    "enormous"
+]

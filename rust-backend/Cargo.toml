@@ -1,0 +1,9 @@
+[workspace]
+members = [
+  "bin/ds",
+  "core",
+]
+
+# overwrite using local crate
+# [patch."{dependency url ex: https://github.com/xxxxxx}"]
+# crate-name = { path = "repo path" }
