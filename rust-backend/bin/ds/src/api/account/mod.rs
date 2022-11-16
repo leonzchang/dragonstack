@@ -1,5 +1,5 @@
 use crate::{
-    api::Dragons,
+    api::{Dragons, ErrorResponse, Message},
     auth::{
         authenticated_account, hash, set_session, AuthenticatedAccountInfo, Session, SessionInfo,
     },
@@ -11,7 +11,9 @@ use ds_core::{
 
 use actix_web::{
     error::{ErrorBadRequest, ErrorConflict, ErrorInternalServerError, ErrorUnauthorized},
-    get, post,
+    get,
+    http::StatusCode,
+    post,
     web::{self, Data},
     Error, HttpRequest, HttpResponse, Responder,
 };
@@ -28,7 +30,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .service(information),
     );
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct RegisterInfo {
     username: String,
     password: String,
@@ -50,7 +52,16 @@ async fn sign_up(
         None => db::store_account(conn.get_ref(), &username_hash, &password_hash)
             .await
             .map_err(ErrorInternalServerError)?,
-        Some(_) => return Err(ErrorConflict("This username has already been taken")),
+        // Some(_) => return Err(ErrorConflict("This username has already been taken")),
+        Some(_) => {
+            return Ok(
+                HttpResponse::build(StatusCode::CONFLICT).json(ErrorResponse {
+                    code: 409,
+                    r#type: "error".to_owned(),
+                    message: "This username has already been taken".to_owned(),
+                }),
+            )
+        }
     }
 
     set_session(conn.get_ref(), &username, None).await
@@ -69,17 +80,34 @@ async fn login(
         .await
         .map_err(ErrorInternalServerError)?
     {
-        None => Err(ErrorBadRequest("Incorrect username/password")),
+        None => Ok(
+            HttpResponse::build(StatusCode::UNAUTHORIZED).json(ErrorResponse {
+                code: 401,
+                r#type: "error".to_owned(),
+                message: "Incorrect username/password".to_owned(),
+            }),
+        ),
+
         Some(account) => {
             if account.password_hash == password_hash {
-                set_session(conn.get_ref(), &username, Some(&account.session_id)).await
+                set_session(conn.get_ref(), &username, account.session_id.as_ref()).await
             } else {
-                Err(ErrorBadRequest("Incorrect username/password"))
+                Ok(
+                    HttpResponse::build(StatusCode::UNAUTHORIZED).json(ErrorResponse {
+                        code: 401,
+                        r#type: "error".to_owned(),
+                        message: "Incorrect username/password".to_owned(),
+                    }),
+                )
             }
         }
     }
 }
 
+#[derive(Serialize, Clone, Debug)]
+pub struct LogoutReponse {
+    message: String,
+}
 #[get("/logout")]
 async fn logout(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, Error> {
     let Some(mut cookie) = req.cookie(COOKIE_NAME) else {return Err(ErrorBadRequest("Logout failed: no cookies."))};
@@ -87,14 +115,16 @@ async fn logout(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, 
     let SessionInfo { username, .. } = Session::parse(cookie.value().to_owned());
 
     // remove session id
-    db::update_session_id(conn.get_ref(), "", &hash(&username))
+    db::update_session_id(conn.get_ref(), None, &hash(&username))
         .await
         .map_err(ErrorInternalServerError)?;
 
     // remove cookie
     cookie.make_removal();
 
-    Ok(HttpResponse::Ok().cookie(cookie).body("Successful logout"))
+    Ok(HttpResponse::Ok().cookie(cookie).json(LogoutReponse {
+        message: "Successful logout".to_owned(),
+    }))
 }
 
 #[derive(Serialize, Clone, Debug)]
@@ -141,9 +171,15 @@ async fn dragons(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder,
 
 #[derive(Serialize, Clone, Debug)]
 pub struct AccountInfo {
+    info: AccountBasic,
+}
+
+#[derive(Serialize, Clone, Debug)]
+pub struct AccountBasic {
     username: String,
     balance: i32,
 }
+
 #[get("/info")]
 async fn information(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
@@ -154,7 +190,9 @@ async fn information(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Respon
         .map_err(ErrorUnauthorized)?;
 
     Ok(HttpResponse::Ok().json(AccountInfo {
-        username,
-        balance: account.balance,
+        info: AccountBasic {
+            username,
+            balance: account.balance,
+        },
     }))
 }

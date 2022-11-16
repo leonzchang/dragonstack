@@ -15,10 +15,10 @@ pub struct TraitsConfig {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum TraitKind {
-    BackgroundColor,
-    Pattern,
-    Build,
-    Size,
+    backgroundColor,
+    pattern,
+    build,
+    size,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -82,7 +82,7 @@ impl Dragon {
             .types
             .iter()
             .for_each(|t| match t.kind {
-                TraitKind::BackgroundColor => {
+                TraitKind::backgroundColor => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
@@ -91,7 +91,7 @@ impl Dragon {
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }
-                TraitKind::Build => {
+                TraitKind::build => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
@@ -100,7 +100,7 @@ impl Dragon {
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }
-                TraitKind::Pattern => {
+                TraitKind::pattern => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
@@ -109,7 +109,7 @@ impl Dragon {
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }
-                TraitKind::Size => {
+                TraitKind::size => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
@@ -140,6 +140,6 @@ pub struct DragonInfo {
 pub struct AccountInfo {
     pub id: i32,
     pub password_hash: String,
-    pub session_id: String,
+    pub session_id: Option<String>,
     pub balance: i32,
 }

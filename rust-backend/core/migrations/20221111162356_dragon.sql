@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS generation(
     id            SERIAL PRIMARY KEY,
-    expiration    TIMESTAMP NOT NULL
+    expiration    TIMESTAMPTZ NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS dragon(
     id             SERIAL PRIMARY KEY,
-    birthdate      TIMESTAMP NOT NULL,
+    birthdate      TIMESTAMPTZ NOT NULL,
     nickname       VARCHAR(64),
     "isPublic"     BOOLEAN NOT NULL,
     "saleValue"    INTEGER Not Null,

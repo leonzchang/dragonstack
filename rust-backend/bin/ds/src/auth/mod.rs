@@ -1,3 +1,4 @@
+use crate::api::Message;
 use ds_core::{
     common::AccountInfo,
     config::{APP_SECRET, COOKIE_NAME, SEPARATOR},
@@ -85,15 +86,15 @@ impl Session {
 pub async fn set_session(
     conn: &PgPool,
     username: &str,
-    session_id: Option<&str>,
-) -> Result<impl Responder, Error> {
+    session_id: Option<&String>,
+) -> Result<HttpResponse, Error> {
     if let Some(session_id) = session_id {
         let session_string = Session::session_string(username, session_id);
         set_session_cookie(&session_string, "session restored")
     } else {
         let session = Session::new(username.to_owned());
         let session_string = session.to_session_string();
-        db::update_session_id(conn, &session.id, &hash(username))
+        db::update_session_id(conn, Some(&session.id), &hash(username))
             .await
             .map_err(ErrorInternalServerError)?;
 
@@ -101,14 +102,20 @@ pub async fn set_session(
     }
 }
 
-pub fn set_session_cookie(session_string: &str, message: &str) -> Result<impl Responder, Error> {
+pub fn set_session_cookie(session_string: &str, message: &str) -> Result<HttpResponse, Error> {
     let cookie = Cookie::build(COOKIE_NAME, session_string)
-        .secure(true)
-        .http_only(true)
+        .path("/")
         .max_age(Duration::hours(1))
+        .http_only(true)
+        .secure(true)
         .finish();
 
-    Ok(HttpResponse::Ok().cookie(cookie).body(message.to_owned()))
+    // https secure
+    // .secure(true)
+
+    Ok(HttpResponse::Ok().cookie(cookie).json(Message {
+        message: message.to_owned(),
+    }))
 }
 
 #[derive(Serialize, Clone, Debug)]
@@ -132,7 +139,9 @@ pub async fn authenticated_account(
     let Some(account_info) = db::get_account(conn, &hash(&username))
         .await
         .map_err(|_|"get account error".to_owned())? else { return Err("Invalid session: does not match up user information".to_owned())};
-    let authenticated = id == account_info.session_id;
+
+    let Some(session_id) =  account_info.session_id.clone() else  { return Err("Invalid session: session should not be none".to_owned())};
+    let authenticated = id == session_id;
 
     Ok(AuthenticatedAccountInfo {
         account: account_info,

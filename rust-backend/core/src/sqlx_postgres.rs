@@ -68,7 +68,6 @@ pub mod ds_management {
         Row,
     };
     use std::convert::TryFrom;
-
     impl TryFrom<PgRow> for DragonInfo {
         type Error = sqlx::Error;
         fn try_from(row: PgRow) -> Result<Self, Self::Error> {
@@ -230,7 +229,7 @@ pub mod ds_management {
     {
         sqlx::query(
             r#"
-                SELECT id, birthdate, nickname, "generationId", "isPublic", "saleValue", "sireValue"
+                SELECT birthdate, nickname, "generationId", "isPublic", "saleValue", "sireValue"
                 FROM dragon 
                 WHERE dragon.id = $1
             "#,
@@ -244,10 +243,10 @@ pub mod ds_management {
     pub async fn update_dragon<'e, T>(
         conn: T,
         dragon_id: i32,
-        nickname: Option<String>,
-        is_public: Option<bool>,
-        sale_value: Option<i32>,
-        sire_value: Option<i32>,
+        nickname: String,
+        is_public: bool,
+        sale_value: i32,
+        sire_value: i32,
     ) -> Result<(), sqlx::Error>
     where
         T: sqlx::Executor<'e, Database = sqlx::postgres::Postgres>,
@@ -268,6 +267,27 @@ pub mod ds_management {
         .and_then(ensure_affected(1))
     }
 
+    pub async fn update_dragon_is_public<'e, T>(
+        conn: T,
+        dragon_id: i32,
+        is_public: bool,
+    ) -> Result<(), sqlx::Error>
+    where
+        T: sqlx::Executor<'e, Database = sqlx::postgres::Postgres>,
+    {
+        sqlx::query(
+            r#"
+                UPDATE dragon SET "isPublic" = $1
+                WHERE id = $2
+            "#,
+        )
+        .bind(is_public)
+        .bind(dragon_id)
+        .execute(conn)
+        .await
+        .and_then(ensure_affected(1))
+    }
+
     pub async fn get_dragon_with_traits<'e, T: Clone>(
         conn: T,
         dragon_id: i32,
@@ -282,7 +302,7 @@ pub mod ds_management {
                 SELECT "traitType", "traitValue" 
                 FROM trait 
                 INNER JOIN dragonTrait ON trait.id = dragonTrait."traitId"
-                WHERE dragonTrait."dragonId" = $1`,
+                WHERE dragonTrait."dragonId" = $1
             "#,
         )
         .bind(dragon_id)
@@ -438,22 +458,35 @@ pub mod ds_management {
 
     pub async fn update_session_id<'e, T>(
         conn: T,
-        session_id: &str,
+        session_id: Option<&String>,
         username_hash: &str,
     ) -> Result<(), sqlx::Error>
     where
         T: sqlx::Executor<'e, Database = sqlx::postgres::Postgres>,
     {
-        sqlx::query(
-            r#"
-                UPDATE account SET "sessionId" = $1 WHERE "usernameHash" = $2
+        if session_id.is_none() {
+            sqlx::query(
+                r#"
+                UPDATE account SET "sessionId" = NULL WHERE "usernameHash" = $2
             "#,
-        )
-        .bind(session_id)
-        .bind(username_hash)
-        .execute(conn)
-        .await
-        .and_then(ensure_affected(1))
+            )
+            .bind(session_id)
+            .bind(username_hash)
+            .execute(conn)
+            .await
+            .and_then(ensure_affected(1))
+        } else {
+            sqlx::query(
+                r#"
+                    UPDATE account SET "sessionId" = $1 WHERE "usernameHash" = $2
+                "#,
+            )
+            .bind(session_id)
+            .bind(username_hash)
+            .execute(conn)
+            .await
+            .and_then(ensure_affected(1))
+        }
     }
 
     pub async fn update_balance<'e, T>(

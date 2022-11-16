@@ -69,15 +69,19 @@ impl Generation {
         Ok(Dragon::new(self.generation_id, None, None))
     }
 }
+#[derive(Serialize, Clone, Debug)]
+struct GenerationReponse {
+    generation: Generation,
+}
 
-#[get("/")]
+#[get("")]
 async fn generation(
     generation_egine: Data<Arc<RwLock<GenerationEgine>>>,
 ) -> Result<impl Responder, Error> {
     let engine = generation_egine.read().await.clone();
     let Some(generation) = engine.generation else {return Err(ErrorInternalServerError("generation engine goes wrong.")) };
 
-    Ok(HttpResponse::Ok().json(generation))
+    Ok(HttpResponse::Ok().json(GenerationReponse { generation }))
 }
 
 #[derive(Serialize, Clone, Debug)]
@@ -105,7 +109,7 @@ impl GenerationEgine {
                 engine.generation = Some(new_generation.clone());
             }
 
-            // delay to next generation
+            // delay until generate next generation
             tokio::time::sleep(Duration::from_millis(
                 (new_generation.expiration.timestamp_millis() - Utc::now().timestamp_millis())
                     as u64,
@@ -131,16 +135,9 @@ mod test {
             (refresh_rate + expiration_period) as i64
         };
 
-        let expired_time = Utc::now().timestamp_millis() + time_until_expiration;
-        let a = Utc::now();
-        let b = Utc.timestamp_millis(expired_time);
-        println!("{}", a);
-
-        println!("{}", b);
-        if a > b {
-            println!("yes")
-        } else {
-            println!("no")
-        }
+        let now = Utc::now();
+        let expired_time = now.timestamp_millis() + time_until_expiration;
+        let expiry = Utc.timestamp_millis(expired_time);
+        assert!(expiry > now)
     }
 }

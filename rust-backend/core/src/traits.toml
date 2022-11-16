@@ -1,5 +1,5 @@
 [[types]]
-kind = "BackgroundColor"
+kind = "backgroundColor"
 values = [  
     "black",
     "white",
@@ -8,7 +8,7 @@ values = [
 ]
 
 [[types]]
-kind = "Pattern"
+kind = "pattern"
 values = [
     "plain",
     "striped",
@@ -17,7 +17,7 @@ values = [
 ]
 
 [[types]]
-kind = "Build"
+kind = "build"
 values = [
     "slender",
     "stocky",
@@ -26,7 +26,7 @@ values = [
 ]
 
 [[types]]
-kind = "Size"
+kind = "size"
 values = [
     "small",
     "medium",

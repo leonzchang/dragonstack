@@ -25,7 +25,7 @@ use tokio::sync::RwLock;
 #[derive(Debug, Parser)]
 pub struct Opts {
     /// Host string in "${HOST}:${PORT}" format.
-    #[clap(long, default_value = "127.0.0.1:3030", env = "DB_HOST")]
+    #[clap(long, default_value = "127.0.0.1:3000", env = "DB_HOST")]
     host: String,
 
     #[clap(long, env = "DS_JWT_PRIV_FILE", value_parser, value_hint = ValueHint::FilePath)]
@@ -79,15 +79,16 @@ async fn build_http_service(
                 web::scope("secure")
                     .wrap(
                         Cors::default()
-                            .allowed_origin("http://localhost:3000")
-                            .allowed_origin("http://127.0.0.1:3000")
-                            .allowed_methods(vec!["POST", "GET", "DELETE"])
+                            .allowed_origin("http://localhost:1234")
+                            .allowed_origin("http://127.0.0.1:1234")
+                            .allowed_methods(vec!["POST", "GET", "PUT", "DELETE"])
                             .allowed_headers(vec![
                                 header::CONTENT_TYPE,
                                 header::AUTHORIZATION,
                                 header::ACCEPT,
                             ])
-                            .max_age(3600),
+                            .max_age(3600)
+                            .supports_credentials(),
                     )
                     .configure(crate::api::routes("api")),
             )
