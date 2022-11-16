@@ -1,4 +1,4 @@
-import { REFRESH_RATE, HOURS } from '../config';
+import { HOURS, REFRESH_RATE } from '../config';
 import Dragon from '../dargon/index';
 
 const refreshRate = REFRESH_RATE * HOURS;

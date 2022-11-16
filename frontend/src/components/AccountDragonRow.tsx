@@ -74,6 +74,7 @@ const AccountDragonRow = (props: dragonProps) => {
       alert("sale value hasn't been given");
     } else {
       fetch(`${BACKEND.ADDRESS}/dragon/update`, {
+        credentials: 'include',
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
