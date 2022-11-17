@@ -25,7 +25,7 @@ Set up postgresql docker:
 
 3. Modify `APP_SECRET` string for hash encryption in [config.rs](https://github.com/leonzchang/dragonstack/blob/master/rust-backend/core/src/config.rs) (optional)
 
-4. Start backend server 
+Start backend server: 
 ```bash
 RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds DATABASE_URL=postgres://"Your postgres Username":"Your postgres User Password"@localhost:5432/dragonstack?sslmode=disable mono
 ```
