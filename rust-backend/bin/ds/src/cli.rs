@@ -59,7 +59,6 @@ pub enum Subcommand {
 pub struct SharedParams {
     /// Database connection
     #[clap(
-        name = "db",
         default_value = "postgres://postgres:123456@localhost:5432/dragonstack?sslmode=disable",
         env = "DS_POSTGRES"
     )]

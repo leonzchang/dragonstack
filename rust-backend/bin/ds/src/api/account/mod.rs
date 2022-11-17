@@ -119,12 +119,17 @@ async fn logout(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, 
         .await
         .map_err(ErrorInternalServerError)?;
 
-    // remove cookie
-    cookie.make_removal();
-
-    Ok(HttpResponse::Ok().cookie(cookie).json(LogoutReponse {
+    let mut resp = HttpResponse::Ok().json(LogoutReponse {
         message: "Successful logout".to_owned(),
-    }))
+    });
+
+    // add a “removal” cookie to the response that matches attributes of given cookie
+    // This will cause browsers/clients to remove stored cookies with this name.
+    // req.cookie("cookie-name") this will not parse cookie's attributes
+    cookie.set_path("/");
+    resp.add_removal_cookie(&cookie)?;
+
+    Ok(resp)
 }
 
 #[derive(Serialize, Clone, Debug)]

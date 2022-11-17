@@ -3,8 +3,34 @@ A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTfu
 ### [DEMO](https://dragonstackfront.herokuapp.com/)
 
 # Getting Started
+## Rust-Backend
+Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
-## Backend
+Set up postgresql docker:
+
+1. Pull postgres docker image: 
+   
+    ```bash
+    docker pull postgres
+    ```
+
+2. Start postgres service: 
+    ```bash
+    docker run --name postgres \
+        -p 5432:5432 \
+        -e POSTGRES_USER="Your postgres Username" \
+        -e POSTGRES_PASSWORD="Your postgres User Password" \
+        -d  postgres
+    ```
+
+3. Modify string for hash encryption in index.ts (optional)
+
+4. Start backend server 
+```bash
+RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds DATABASE_URL=postgres://"Your postgres Username":"Your postgres User Password"@localhost:5432/dragonstack?sslmode=disable mono
+```
+
+## Node-Backend
 Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
 Set up postgresql docker:

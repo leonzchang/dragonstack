@@ -31,6 +31,7 @@ interface Istate {
 }
 
 const AccountDragonRow = (props: dragonProps) => {
+  const regExp = /^[0-9\b]+$/;
   const [state, setState] = useState<Istate>({
     nickname: props.dragon.nickname,
     isPublic: props.dragon.isPublic,
@@ -44,11 +45,17 @@ const AccountDragonRow = (props: dragonProps) => {
   };
 
   const updateSaleValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ ...state, saleValue: event.target.valueAsNumber });
+    // only accept positive integer
+    if (regExp.test(event.target.value)) {
+      setState({ ...state, saleValue: event.target.valueAsNumber });
+    }
   };
 
   const updateSireValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ ...state, sireValue: event.target.valueAsNumber });
+    // only accept positive integer
+    if (regExp.test(event.target.value)) {
+      setState({ ...state, saleValue: event.target.valueAsNumber });
+    }
   };
 
   const updateIsPublic = (event: React.ChangeEvent<HTMLInputElement>) => {

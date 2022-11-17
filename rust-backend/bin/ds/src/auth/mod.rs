@@ -110,9 +110,6 @@ pub fn set_session_cookie(session_string: &str, message: &str) -> Result<HttpRes
         .secure(true)
         .finish();
 
-    // https secure
-    // .secure(true)
-
     Ok(HttpResponse::Ok().cookie(cookie).json(Message {
         message: message.to_owned(),
     }))
