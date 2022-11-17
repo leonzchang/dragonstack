@@ -14,6 +14,7 @@ pub struct TraitsConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+#[warn(non_camel_case_types)]
 pub enum TraitKind {
     backgroundColor,
     pattern,

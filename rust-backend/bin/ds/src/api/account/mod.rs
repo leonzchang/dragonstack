@@ -1,5 +1,5 @@
 use crate::{
-    api::{Dragons, ErrorResponse, Message},
+    api::{Dragons, ErrorResponse},
     auth::{
         authenticated_account, hash, set_session, AuthenticatedAccountInfo, Session, SessionInfo,
     },
@@ -10,7 +10,7 @@ use ds_core::{
 };
 
 use actix_web::{
-    error::{ErrorBadRequest, ErrorConflict, ErrorInternalServerError, ErrorUnauthorized},
+    error::{ErrorBadRequest, ErrorInternalServerError, ErrorUnauthorized},
     get,
     http::StatusCode,
     post,

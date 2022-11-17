@@ -8,7 +8,7 @@ use ds_core::{
 use actix_web::{
     cookie::{time::Duration, Cookie},
     error::ErrorInternalServerError,
-    Error, HttpResponse, Responder,
+    Error, HttpResponse,
 };
 use serde::Serialize;
 use sha2::{Digest, Sha256};
