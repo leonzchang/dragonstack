@@ -12,7 +12,9 @@ interface fectchPublicDragonsJson {
 export const fectchPublicDragons = createAsyncThunk(
   'publicDragons/fectchPublicDragons',
   async () => {
-    const response = await fetch(`${BACKEND.ADDRESS}/dragon/public-dragons`);
+    const response = await fetch(`${BACKEND.ADDRESS}/dragon/public-dragons`, {
+      credentials: 'include',
+    });
     const json: fectchPublicDragonsJson = await response.json();
     return json;
   }
