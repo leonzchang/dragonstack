@@ -3,7 +3,7 @@ A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTfu
 ### [DEMO](https://dragonstackfront.herokuapp.com/)
 
 # Getting Started
-## Rust-Backend
+## Backend
 Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
 Set up postgresql docker:
@@ -29,41 +29,8 @@ Start backend server:
 ```bash
 RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds DATABASE_URL=postgres://"Your postgres Username":"Your postgres User Password"@localhost:5432/dragonstack?sslmode=disable mono
 ```
-
-- Backend service will start at http://localhost:3000/
-
-## Node-Backend
-Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
-
-Set up postgresql docker:
-
-1. Pull postgres docker image: 
-   
-    ```bash
-    docker pull postgres
-    ```
-
-2. Start postgres service: 
-    ```bash
-    docker run --name mypostgres \
-        -p 5432:5432 \
-        -e POSTGRES_USER="Your postgres Username" \
-        -e POSTGRES_PASSWORD="Your postgres User Password" \
-        -d  postgres
-    ```
-
-3. Change line `export PGPASSWORD="Your postgres User Password"` in [configure_db.sh](https://github.com/leonzchang/dragonstack/tree/master/node-backend/bin/configure_db.sh), setup postgres schema by running command:
-    ```bash
-    yarn configure
-    ```
-4. Change line ` user: 'Your postgres Username'` and `password: 'Your postgres User Password'` to your postgres username and password in [databaseConfiguration.ts](https://github.com/leonzchang/dragonstack/tree/master/node-backend/bin/databaseConfiguration.ts)
-5. Modify string for hash encryption in [index.ts](https://github.com/leonzchang/dragonstack/tree/master/node-backend/bin/index.ts) (optional)
-
-Start backend server: 
-```bash
-yarn start
-```
 - Backend service will start at [http://localhost:3000/]( http://localhost:3000/)
+
 
 ## Frontend
 Start frontend application: 
