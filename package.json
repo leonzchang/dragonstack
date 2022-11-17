@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:leonzchang/dragonstack.git",
-  "author": "<bellerophon00530@gmail.com>",
+  "author": "Leonz Chang <bellerophon00530@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -24,8 +24,8 @@
     "prettier": "^2.3.2",
     "typescript": "^4.3.5"
   },
-  "lint-staged":{
-    "**/*.(ts|tsx)":[
+  "lint-staged": {
+    "**/*.(ts|tsx)": [
       "yarn format",
       "yarn lint"
     ]

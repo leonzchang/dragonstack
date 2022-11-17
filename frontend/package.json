@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "1.0.0",
   "main": "index.js",
+  "author": "Leonz Chang <bellerophon00530@gmail.com>",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf dist",
