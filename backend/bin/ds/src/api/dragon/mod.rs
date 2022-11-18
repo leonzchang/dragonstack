@@ -51,19 +51,23 @@ async fn new_dragon(
     // after write account id into egine's generation hash set free the read write lock
     let mut dragon = match async {
         let mut engine = generation_egine.write().await;
-
-        let  Some(res)= engine.generation.as_mut().map(| g|g
-            .new_dragon(account.id)) else {return Err(ErrorInternalServerError("GenerationEgine or newDragon goes wrong"))};    
+        let Some(res) = engine.generation.as_mut().map(|g| g.new_dragon(account.id)) else {
+                return Err(ErrorInternalServerError("GenerationEgine goes wrong"))
+            };
         res
     }
-    .await{
-        Ok(dragon) =>dragon,
-        Err(e)=> return   Ok(
-            HttpResponse::build(StatusCode::BAD_REQUEST).json(ErrorResponse {
-                code: 400,
-                r#type: "error".to_owned(),
-                message: format!("{:?}",e),
-            }))
+    .await
+    {
+        Ok(dragon) => dragon,
+        Err(e) => {
+            return Ok(
+                HttpResponse::build(StatusCode::BAD_REQUEST).json(ErrorResponse {
+                    code: 400,
+                    r#type: "error".to_owned(),
+                    message: format!("{:?}", e),
+                }),
+            )
+        }
     };
 
     let new_dragon_id = db::store_dragon(conn.get_ref(), dragon.clone())
