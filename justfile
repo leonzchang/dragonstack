@@ -17,7 +17,4 @@ local-frontend:
 ## backend
 # start rust local backend
 local-mono:
-    cd rust-backend && RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds mono
-# start node local backend
-local-mono-node:
-    cd node-backend && yarn && yarn dev
+    cd backend && RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds mono

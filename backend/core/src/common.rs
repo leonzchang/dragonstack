@@ -1,9 +1,14 @@
-use std::{fs, path::PathBuf};
+use std::{
+    fmt::{Display, Formatter},
+    fs,
+    path::PathBuf,
+    str::FromStr,
+};
 
 use chrono::{DateTime, Utc};
 use once_cell::sync::OnceCell;
 use rand::Rng;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 pub static TRAIT_CONFIG: OnceCell<TraitsConfig> = OnceCell::new();
 
@@ -13,13 +18,62 @@ pub struct TraitsConfig {
     pub types: Vec<TraitCatagory>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[warn(non_camel_case_types)]
+#[derive(Debug, Clone)]
 pub enum TraitKind {
-    backgroundColor,
-    pattern,
-    build,
-    size,
+    BackgroundColor,
+    Pattern,
+    Build,
+    Size,
+}
+
+// impl for deserialize trait.toml to TraitsConfig
+impl FromStr for TraitKind {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> anyhow::Result<Self> {
+        match s {
+            "backgroundColor" => Ok(TraitKind::BackgroundColor),
+            "BackgroundColor" => Ok(TraitKind::BackgroundColor),
+            "pattern" => Ok(TraitKind::Pattern),
+            "Pattern" => Ok(TraitKind::Pattern),
+            "build" => Ok(TraitKind::Build),
+            "Build" => Ok(TraitKind::Build),
+            "size" => Ok(TraitKind::Size),
+            "Size" => Ok(TraitKind::Size),
+            _ => Err(anyhow::anyhow!("invalid TraitKind string")),
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for TraitKind {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        s.parse::<TraitKind>().map_err(serde::de::Error::custom)
+    }
+}
+
+// impl for serialsize for init_trait and api
+impl Display for TraitKind {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TraitKind::BackgroundColor => write!(f, "backgroundColor"),
+            TraitKind::Pattern => write!(f, "pattern"),
+            TraitKind::Build => write!(f, "build"),
+            TraitKind::Size => write!(f, "size"),
+        }
+    }
+}
+
+impl Serialize for TraitKind {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -83,39 +137,39 @@ impl Dragon {
             .types
             .iter()
             .for_each(|t| match t.kind {
-                TraitKind::backgroundColor => {
+                TraitKind::BackgroundColor => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
                     traits.push(TraitType {
-                        trait_type: format!("{:?}", t.kind),
+                        trait_type: t.kind.to_string(),
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }
-                TraitKind::build => {
+                TraitKind::Build => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
                     traits.push(TraitType {
-                        trait_type: format!("{:?}", t.kind),
+                        trait_type: t.kind.to_string(),
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }
-                TraitKind::pattern => {
+                TraitKind::Pattern => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
                     traits.push(TraitType {
-                        trait_type: format!("{:?}", t.kind),
+                        trait_type: t.kind.to_string(),
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }
-                TraitKind::size => {
+                TraitKind::Size => {
                     let mut rng = rand::thread_rng();
                     let random_number = rng.gen_range(0.0..1.0);
                     let random_index = (random_number * (t.values.len() as f64)).floor() as usize;
                     traits.push(TraitType {
-                        trait_type: format!("{:?}", t.kind),
+                        trait_type: t.kind.to_string(),
                         trait_value: t.values[random_index].to_owned(),
                     });
                 }

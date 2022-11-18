@@ -46,7 +46,7 @@ pub async fn init_traits(conn: &PgPool, traits: TraitsConfig) -> sqlx::Result<()
     traits.types.iter().for_each(|t| {
         t.values
             .iter()
-            .for_each(|v| trait_vec.push([format!("{:?}", t.kind), v.to_owned()]))
+            .for_each(|v| trait_vec.push([t.kind.to_string(), v.to_owned()]))
     });
 
     for pair in trait_vec {

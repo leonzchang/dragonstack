@@ -54,7 +54,7 @@ const AccountDragonRow = (props: dragonProps) => {
   const updateSireValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     // only accept positive integer
     if (regExp.test(event.target.value)) {
-      setState({ ...state, saleValue: event.target.valueAsNumber });
+      setState({ ...state, sireValue: event.target.valueAsNumber });
     }
   };
 
