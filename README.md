@@ -3,7 +3,7 @@ A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTfu
 ### [DEMO](https://dragonstackfront.herokuapp.com/)
 
 # Getting Started
-## Backend
+## gRPC server and Backend
 Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
 Set up postgresql docker:
@@ -23,13 +23,19 @@ Set up postgresql docker:
         -d  postgres
     ```
 
-3. Modify `APP_SECRET` string for hash encryption in [config.rs](https://github.com/leonzchang/dragonstack/blob/master/rust-backend/core/src/config.rs) (optional)
+3. Modify `APP_SECRET` string for hash encryption in [confidential.rs](https://github.com/leonzchang/dragonstack/blob/master/backend/bin/ds-auth-grpc/src/mono/confidential.rs) (optional)
+
+Start gRPC server: 
+```bash
+RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin ds-auth-grpc mono
+```
+- gRPC server will start at http://localhost:3001/ 
 
 Start backend server: 
 ```bash
 RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds DATABASE_URL=postgres://"Your postgres Username":"Your postgres User Password"@localhost:5432/dragonstack?sslmode=disable mono
 ```
-- Backend service will start at [http://localhost:3000/]( http://localhost:3000/)
+- Backend service will start at http://localhost:3000/
 
 
 ## Frontend
