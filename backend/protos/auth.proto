@@ -1,0 +1,82 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+/// google.protobuf.Empty, generic empty message
+// equal to the message `Empty` below
+// message Empty {}
+package auth;
+
+
+
+service Auth {
+    // give a username return a uuid
+    rpc NewSessionId (google.protobuf.Empty) returns (NewSessionIdResponse);
+    // give username and uuid return a sessionString
+    rpc ToSessionString (SessionStringRequest) returns (SessionStringResponse);
+    // give a sessionString return boolean
+    rpc Verify (VerifySessionRequest) returns (VerifySessionResponse);
+    // give a sessionString return username, uuid, session hash
+    rpc Parse (ParseRequest) returns (ParseResponse);
+    // give a String return hash string
+    rpc Hash (HashRequest) returns (HashResponse);
+    // give username and uuid return concat string with separator
+    rpc AccountData (AccountDataRequest) returns (AccountDataResponse);
+}
+
+
+message NewSessionIdResponse {
+    string uuid = 1;
+}
+
+message SessionStringRequest {
+    string username = 1;
+    string uuid = 2;
+}
+
+message SessionStringResponse {
+    string sessionString = 1;
+}
+
+message ParseSessionRequest {
+    string sessionString = 1;
+}
+
+message ParseSessionResponse {
+    string username = 1;
+    string uuid = 2;
+    string sessionHash = 3;
+}
+
+message VerifySessionRequest {
+    string sessionString = 1;
+}
+
+message VerifySessionResponse {
+    bool verify = 1;
+}
+
+message ParseRequest {
+    string sessionString = 1;
+}
+
+message ParseResponse {
+    string username = 1;
+    string uuid = 2;
+    string sessionHash = 3;
+}
+
+message HashRequest {
+    string string = 1;
+}
+
+message HashResponse {
+    string hashString = 1;
+}
+
+message AccountDataRequest {
+    string username = 1;
+    string uuid = 2;
+}
+
+message AccountDataResponse {
+    string accountData = 1;
+}

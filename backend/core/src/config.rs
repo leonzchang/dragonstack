@@ -7,6 +7,6 @@ pub const INITAL_BALANCE: i32 = 50;
 
 pub const COOKIE_NAME: &str = "sessionString";
 
-//string for hash  encryption
-pub const APP_SECRET: &str = "foo123!123foo";
-pub const SEPARATOR: &str = "|";
+// client
+pub const AUTHORIZATION: &str = "authorization";
+pub const BAERER: &str = "Bearer";

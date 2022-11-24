@@ -1,6 +1,4 @@
-use crate::api::generation::GenerationEgine;
-use crate::cli::SharedParams;
-
+use crate::{api::generation::GenerationEgine, auth::GrpcClient, cli::SharedParams};
 use ds_core::{
     common::{TraitsConfig, TRAIT_CONFIG},
     sqlx_postgres::{connect_and_migrate, init_traits, sqlx::PgPool},
@@ -20,7 +18,7 @@ use ansi_term::Colour;
 use chrono::Utc;
 use clap::{Parser, ValueHint};
 use log::Level;
-use tokio::sync::RwLock;
+use tokio::sync::{Mutex, RwLock};
 
 #[derive(Debug, Parser)]
 pub struct Opts {
@@ -33,6 +31,14 @@ pub struct Opts {
 
     #[clap(long, env = "DS_JWT_PUB_FILE", value_parser, value_hint = ValueHint::FilePath)]
     jwt_pub_file: Option<PathBuf>,
+
+    /// gRpc host string in "${HOST}:${PORT}" format.
+    #[clap(long, default_value = "http://127.0.0.1:3001", env = "AS_HOST")]
+    grpc_host_url: String,
+
+    /// gRpc access token
+    #[clap(long, default_value = "authmeauthmeauthme", env = "AS_ACCESS_TOKEN")]
+    grpc_access_token: String,
 }
 
 pub fn run(shared: SharedParams, opts: Opts) -> anyhow::Result<()> {
@@ -58,7 +64,10 @@ pub fn run(shared: SharedParams, opts: Opts) -> anyhow::Result<()> {
             GenerationEgine::build_new_generation(generation_engine_worker, &engine_pg_pool).await;
         });
 
-        build_http_service(&opts.host, pg_pool, generation_engine)
+        // create gRpc client
+        let grpc_client = GrpcClient::new(&opts.grpc_host_url, &opts.grpc_access_token).await?;
+
+        build_http_service(&opts.host, pg_pool, generation_engine, grpc_client)
             .await
             .map_err(Into::into)
     })
@@ -68,11 +77,13 @@ async fn build_http_service(
     host: &str,
     pg_pool: PgPool,
     generation_engine: Arc<RwLock<GenerationEgine>>,
+    grpc_client: GrpcClient,
 ) -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(Data::new(pg_pool.clone()))
             .app_data(Data::new(generation_engine.clone()))
+            .app_data(Data::new(Mutex::new(grpc_client.clone())))
             .wrap(middleware::Logger::default())
             .route("/healthz", web::get().to(HttpResponse::Ok))
             .service(

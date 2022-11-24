@@ -1,6 +1,6 @@
 use crate::{
     api::{generation::GenerationEgine, Dragon, Dragons, ErrorResponse, Message},
-    auth::{authenticated_account, AuthenticatedAccountInfo},
+    auth::{authenticated_account, AuthenticatedAccountInfo, GrpcClient},
 };
 use ds_core::{
     breeder::Breeder,
@@ -19,7 +19,7 @@ use actix_web::{
     Error, HttpRequest, HttpResponse, Responder,
 };
 use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
+use tokio::sync::{Mutex, RwLock};
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -39,12 +39,15 @@ struct NewDragonResponse {
 #[get("/new")]
 async fn new_dragon(
     conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
     req: HttpRequest,
     generation_egine: Data<Arc<RwLock<GenerationEgine>>>,
 ) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
+
     let AuthenticatedAccountInfo { account, .. } =
-        authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+        authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
             .await
             .map_err(ErrorUnauthorized)?;
 
@@ -95,11 +98,14 @@ struct UpdateDragonRequest {
 #[put("/update")]
 async fn update_dragon(
     conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
     body: web::Json<UpdateDragonRequest>,
     req: HttpRequest,
 ) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
-    authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+    let client = client.lock().await;
+
+    authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
         .await
         .map_err(ErrorUnauthorized)?;
 
@@ -128,10 +134,15 @@ async fn update_dragon(
 }
 
 #[get("/public-dragons")]
-async fn public_dragon(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, Error> {
+async fn public_dragon(
+    conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
+    req: HttpRequest,
+) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
 
-    authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+    authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
         .await
         .map_err(ErrorUnauthorized)?;
 
@@ -151,15 +162,18 @@ struct BuyDragonRequest {
 #[post("/buy")]
 async fn buy_dragon(
     conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
     body: web::Json<BuyDragonRequest>,
     req: HttpRequest,
 ) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
+
     let AuthenticatedAccountInfo {
         account,
         authenticated,
         ..
-    } = authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+    } = authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
         .await
         .map_err(ErrorUnauthorized)?;
 
@@ -243,15 +257,18 @@ struct MateDragonRequest {
 #[post("/mate")]
 async fn mate_dragon(
     conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
     body: web::Json<MateDragonRequest>,
     req: HttpRequest,
 ) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
+
     let AuthenticatedAccountInfo {
         account,
         authenticated,
         ..
-    } = authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+    } = authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
         .await
         .map_err(ErrorUnauthorized)?;
 

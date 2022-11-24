@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "bin/ds",
+  "bin/ds-auth-grpc",
   "core",
 ]
 

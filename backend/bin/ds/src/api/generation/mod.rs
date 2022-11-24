@@ -104,10 +104,8 @@ impl GenerationEgine {
             new_generation.generation_id = Some(generation_id);
             log::info!("new generation {:?}", new_generation);
 
-            {
-                let mut engine = engine.write().await;
-                engine.generation = Some(new_generation.clone());
-            }
+            let mut engine = engine.write().await;
+            engine.generation = Some(new_generation.clone());
 
             // delay until generate next generation
             tokio::time::sleep(Duration::from_millis(

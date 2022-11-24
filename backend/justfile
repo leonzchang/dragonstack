@@ -1,4 +1,8 @@
 set dotenv-load
 
-local-mono:
+
+local-mono-ds:
     RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds mono
+
+local-mono-as:
+    RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin ds-auth-grpc mono

@@ -1,7 +1,8 @@
 use crate::{
     api::{Dragons, ErrorResponse},
     auth::{
-        authenticated_account, hash, set_session, AuthenticatedAccountInfo, Session, SessionInfo,
+        authenticated_account, set_session, AuthenticatedAccountInfo, GrpcClient, HashRequest,
+        HashResponse, ParseRequest, ParseResponse,
     },
 };
 use ds_core::{
@@ -18,6 +19,8 @@ use actix_web::{
     Error, HttpRequest, HttpResponse, Responder,
 };
 use serde::{Deserialize, Serialize};
+use tokio::sync::Mutex;
+use tonic::Request as gRpcRequest;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -39,11 +42,31 @@ struct RegisterInfo {
 #[post("/signup")]
 async fn sign_up(
     register_info: web::Json<RegisterInfo>,
+    client: Data<Mutex<GrpcClient>>,
     conn: Data<PgPool>,
 ) -> Result<impl Responder, Error> {
     let RegisterInfo { username, password } = register_info.into_inner();
-    let username_hash = hash(&username);
-    let password_hash = hash(&password);
+    let mut client = client.lock().await;
+
+    let HashResponse {
+        hash_string: username_hash,
+    } = client
+        .grcp
+        .hash(gRpcRequest::new(HashRequest {
+            string: username.clone(),
+        }))
+        .await
+        .map_err(ErrorInternalServerError)?
+        .into_inner();
+
+    let HashResponse {
+        hash_string: password_hash,
+    } = client
+        .grcp
+        .hash(gRpcRequest::new(HashRequest { string: password }))
+        .await
+        .map_err(ErrorInternalServerError)?
+        .into_inner();
 
     match db::get_account(conn.get_ref(), &username_hash)
         .await
@@ -52,7 +75,6 @@ async fn sign_up(
         None => db::store_account(conn.get_ref(), &username_hash, &password_hash)
             .await
             .map_err(ErrorInternalServerError)?,
-        // Some(_) => return Err(ErrorConflict("This username has already been taken")),
         Some(_) => {
             return Ok(
                 HttpResponse::build(StatusCode::CONFLICT).json(ErrorResponse {
@@ -64,17 +86,38 @@ async fn sign_up(
         }
     }
 
-    set_session(conn.get_ref(), &username, None).await
+    set_session(conn.get_ref(), client, &username, None).await
 }
 
 #[post("/login")]
 async fn login(
     register_info: web::Json<RegisterInfo>,
+    client: Data<Mutex<GrpcClient>>,
     conn: Data<PgPool>,
 ) -> Result<impl Responder, Error> {
     let RegisterInfo { username, password } = register_info.into_inner();
-    let username_hash = hash(&username);
-    let password_hash = hash(&password);
+
+    let mut client = client.lock().await;
+
+    let HashResponse {
+        hash_string: username_hash,
+    } = client
+        .grcp
+        .hash(gRpcRequest::new(HashRequest {
+            string: username.clone(),
+        }))
+        .await
+        .map_err(ErrorInternalServerError)?
+        .into_inner();
+
+    let HashResponse {
+        hash_string: password_hash,
+    } = client
+        .grcp
+        .hash(gRpcRequest::new(HashRequest { string: password }))
+        .await
+        .map_err(ErrorInternalServerError)?
+        .into_inner();
 
     match db::get_account(conn.get_ref(), &username_hash)
         .await
@@ -90,7 +133,13 @@ async fn login(
 
         Some(account) => {
             if account.password_hash == password_hash {
-                set_session(conn.get_ref(), &username, account.session_id.as_ref()).await
+                set_session(
+                    conn.get_ref(),
+                    client,
+                    &username,
+                    account.session_id.as_ref(),
+                )
+                .await
             } else {
                 Ok(
                     HttpResponse::build(StatusCode::UNAUTHORIZED).json(ErrorResponse {
@@ -109,20 +158,39 @@ pub struct LogoutReponse {
     message: String,
 }
 #[get("/logout")]
-async fn logout(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, Error> {
+async fn logout(
+    conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
+    req: HttpRequest,
+) -> Result<impl Responder, Error> {
     let Some(mut cookie) = req.cookie(COOKIE_NAME) else {return Err(ErrorBadRequest("Logout failed: no cookies."))};
 
-    let SessionInfo { username, .. } = Session::parse(cookie.value().to_owned());
+    let mut client = client.lock().await;
+
+    let ParseResponse { username, .. } = client
+        .grcp
+        .parse(gRpcRequest::new(ParseRequest {
+            session_string: cookie.value().to_owned(),
+        }))
+        .await
+        .map_err(ErrorBadRequest)?
+        .into_inner();
+
+    let HashResponse { hash_string } = client
+        .grcp
+        .hash(gRpcRequest::new(HashRequest { string: username }))
+        .await
+        .map_err(ErrorInternalServerError)?
+        .into_inner();
 
     // remove session id
-    db::update_session_id(conn.get_ref(), None, &hash(&username))
+    db::update_session_id(conn.get_ref(), None, &hash_string)
         .await
         .map_err(ErrorInternalServerError)?;
 
     let mut resp = HttpResponse::Ok().json(LogoutReponse {
         message: "Successful logout".to_owned(),
     });
-
     // add a “removal” cookie to the response that matches attributes of given cookie
     // This will cause browsers/clients to remove stored cookies with this name.
     // req.cookie("cookie-name") this will not parse cookie's attributes
@@ -139,11 +207,14 @@ pub struct AuthenticatedResponse {
 #[get("/authenticated")]
 async fn authenticated_cookie(
     conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
     req: HttpRequest,
 ) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
+
     let AuthenticatedAccountInfo { authenticated, .. } =
-        authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+        authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
             .await
             .map_err(ErrorUnauthorized)?;
 
@@ -151,10 +222,16 @@ async fn authenticated_cookie(
 }
 
 #[get("/dragons")]
-async fn dragons(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, Error> {
+async fn dragons(
+    conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
+    req: HttpRequest,
+) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
+
     let AuthenticatedAccountInfo { account, .. } =
-        authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+        authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
             .await
             .map_err(ErrorUnauthorized)?;
     let account_dragons = db::get_account_dragon(conn.get_ref(), account.id)
@@ -186,11 +263,17 @@ pub struct AccountBasic {
 }
 
 #[get("/info")]
-async fn information(conn: Data<PgPool>, req: HttpRequest) -> Result<impl Responder, Error> {
+async fn information(
+    conn: Data<PgPool>,
+    client: Data<Mutex<GrpcClient>>,
+    req: HttpRequest,
+) -> Result<impl Responder, Error> {
     let cookie = req.cookie(COOKIE_NAME);
+    let client = client.lock().await;
+
     let AuthenticatedAccountInfo {
         username, account, ..
-    } = authenticated_account(conn.get_ref(), cookie.map(|c| c.value().to_owned()))
+    } = authenticated_account(conn.get_ref(), client, cookie.map(|c| c.value().to_owned()))
         .await
         .map_err(ErrorUnauthorized)?;
 

@@ -16,5 +16,10 @@ local-frontend:
 
 ## backend
 # start rust local backend
-local-mono:
+local-mono-backend:
     cd backend && RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds mono
+
+## auth grpc server
+# start rust local auth grpc server
+local-mono-auth:
+    cd backend && RUST_BACKTRACE=1 RUST_LOG=info,sqlx=error cargo run --bin ds-auth-grpc mono
