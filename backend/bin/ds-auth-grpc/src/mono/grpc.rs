@@ -1,10 +1,8 @@
-use crate::{
-    auth::{
-        auth_server::Auth, AccountDataRequest, AccountDataResponse, HashRequest, HashResponse,
-        NewSessionIdResponse, ParseRequest, ParseResponse, SessionStringRequest,
-        SessionStringResponse, VerifySessionRequest, VerifySessionResponse,
-    },
-    mono::confidential,
+use crate::mono::confidential;
+use ds_core::authsdk::{
+    AccountDataRequest, AccountDataResponse, AuthServiceTrait, HashRequest, HashResponse,
+    NewSessionIdResponse, ParseRequest, ParseResponse, SessionStringRequest, SessionStringResponse,
+    VerifySessionRequest, VerifySessionResponse,
 };
 
 use sha2::{Digest, Sha256};
@@ -15,7 +13,7 @@ use uuid::Uuid;
 pub struct AuthService;
 
 #[tonic::async_trait]
-impl Auth for AuthService {
+impl AuthServiceTrait for AuthService {
     async fn new_session_id(
         &self,
         _request: Request<()>,

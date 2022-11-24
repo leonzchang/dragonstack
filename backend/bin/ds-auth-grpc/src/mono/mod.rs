@@ -1,13 +1,11 @@
 mod confidential;
 mod grpc;
 
-use crate::{
-    auth::auth_server::AuthServer,
-    mono::{
-        confidential::{AUTHORIZATION, BAERER},
-        grpc::AuthService,
-    },
+use crate::mono::{
+    confidential::{AUTHORIZATION, BAERER},
+    grpc::AuthService,
 };
+use ds_core::authsdk::AuthServiceServer;
 
 use clap::Parser;
 use tokio::runtime::Runtime;
@@ -69,7 +67,7 @@ pub fn run(opts: Opts) -> anyhow::Result<()> {
         let host = opts.host.parse().expect("opts host parse error");
         let server_interceptor = AuthServerInterceptor::new(&opts.grpc_access_token);
         let auth_service = AuthService::default();
-        let auth_server = AuthServer::with_interceptor(auth_service, server_interceptor);
+        let auth_server = AuthServiceServer::with_interceptor(auth_service, server_interceptor);
         println!("AuthServer listening on {}", opts.host);
 
         let _ = Server::builder().add_service(auth_server).serve(host).await;

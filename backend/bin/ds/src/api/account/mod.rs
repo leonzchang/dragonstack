@@ -1,11 +1,9 @@
 use crate::{
     api::{Dragons, ErrorResponse},
-    auth::{
-        authenticated_account, set_session, AuthenticatedAccountInfo, GrpcClient, HashRequest,
-        HashResponse, ParseRequest, ParseResponse,
-    },
+    auth::{authenticated_account, set_session, AuthenticatedAccountInfo, GrpcClient},
 };
 use ds_core::{
+    authsdk::{HashRequest, HashResponse, ParseRequest, ParseResponse},
     config::COOKIE_NAME,
     sqlx_postgres::{ds_management as db, sqlx::PgPool},
 };

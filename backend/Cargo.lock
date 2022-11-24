@@ -752,7 +752,6 @@ dependencies = [
  "http",
  "log",
  "once_cell",
- "prost",
  "protobuf",
  "rand",
  "serde",
@@ -761,7 +760,6 @@ dependencies = [
  "strum_macros",
  "tokio",
  "tonic",
- "tonic-build",
 ]
 
 [[package]]
@@ -770,15 +768,14 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "ds-core",
  "log",
- "prost",
  "serde",
  "sha2",
  "strum",
  "strum_macros",
  "tokio",
  "tonic",
- "tonic-build",
  "tracing-subscriber",
  "uuid",
 ]
@@ -792,10 +789,13 @@ dependencies = [
  "chrono",
  "log",
  "once_cell",
+ "prost",
  "rand",
  "serde",
  "sqlx",
  "toml",
+ "tonic",
+ "tonic-build",
 ]
 
 [[package]]

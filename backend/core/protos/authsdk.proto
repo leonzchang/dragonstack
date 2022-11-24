@@ -1,13 +1,13 @@
 syntax = "proto3";
 import "google/protobuf/empty.proto";
-/// google.protobuf.Empty, generic empty message
+// google.protobuf.Empty, generic empty message
 // equal to the message `Empty` below
 // message Empty {}
-package auth;
+package authsdk;
 
 
 
-service Auth {
+service AuthService {
     // give a username return a uuid
     rpc NewSessionId (google.protobuf.Empty) returns (NewSessionIdResponse);
     // give username and uuid return a sessionString

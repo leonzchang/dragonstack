@@ -1,8 +1,5 @@
 mod cli;
 mod mono;
-mod auth {
-    tonic::include_proto!("auth");
-}
 
 use clap::Parser;
 use cli::{Cli, Subcommand::Mono};
