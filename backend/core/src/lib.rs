@@ -3,7 +3,7 @@ pub mod common;
 pub mod config;
 pub mod sqlx_postgres;
 
-// protos
+// gRPC protos
 pub mod authsdk {
     tonic::include_proto!("authsdk");
 
