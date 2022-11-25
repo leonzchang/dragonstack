@@ -104,8 +104,15 @@ impl GenerationEgine {
             new_generation.generation_id = Some(generation_id);
             log::info!("new generation {:?}", new_generation);
 
-            let mut engine = engine.write().await;
-            engine.generation = Some(new_generation.clone());
+            // require read write lock in block scope
+            // so that write-lock will be freed after update GenerationEgine immediately
+            // if write-lock is put out of this scope, write-lock will be kept holding until
+            // build_new_generation is finished which will make starvation when generation
+            // api requires read-lock, this will cause fetch generation api unexpected error(delay)
+            {
+                let mut engine = engine.write().await;
+                engine.generation = Some(new_generation.clone());
+            }
 
             // delay until generate next generation
             tokio::time::sleep(Duration::from_millis(
