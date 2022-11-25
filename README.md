@@ -3,6 +3,11 @@ A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTfu
 ### [DEMO](https://dragonstackfront.herokuapp.com/)
 
 # Getting Started
+
+Visualized overview
+
+![](https://github.com/leonzchang/dragonstack/blob/master/assets/service.jpg)
+
 ## gRPC server and Backend
 Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
