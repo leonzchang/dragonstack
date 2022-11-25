@@ -83,8 +83,8 @@ pub async fn set_session<'a>(
                 uuid: session_id.clone(),
             })
             .await
-            .map_err(|_| ErrorInternalServerError("grpc fn to_session_string failed"))?
-            .into_inner();
+            .and_then(|resq| Ok(resq.into_inner()))
+            .map_err(|_| ErrorInternalServerError("grpc fn to_session_string failed"))?;
 
         set_session_cookie(&session_string, "session restored")
     } else {
@@ -92,8 +92,8 @@ pub async fn set_session<'a>(
             .grcp
             .new_session_id(Request::new(()))
             .await
-            .map_err(|_| ErrorInternalServerError("grpc fn new_session_id failed"))?
-            .into_inner();
+            .and_then(|resq| Ok(resq.into_inner()))
+            .map_err(|_| ErrorInternalServerError("grpc fn new_session_id failed"))?;
 
         let HashResponse { hash_string } = client
             .grcp
@@ -101,8 +101,8 @@ pub async fn set_session<'a>(
                 string: username.to_owned(),
             }))
             .await
-            .map_err(|_| ErrorInternalServerError("grpc fn hash failed"))?
-            .into_inner();
+            .and_then(|resq| Ok(resq.into_inner()))
+            .map_err(|_| ErrorInternalServerError("grpc fn hash failed"))?;
 
         let SessionStringResponse { session_string } = client
             .grcp
@@ -111,8 +111,8 @@ pub async fn set_session<'a>(
                 uuid: uuid.clone(),
             }))
             .await
-            .map_err(|_| ErrorInternalServerError("grpc fn to_session_string failed"))?
-            .into_inner();
+            .and_then(|resq| Ok(resq.into_inner()))
+            .map_err(|_| ErrorInternalServerError("grpc fn to_session_string failed"))?;
 
         db::update_session_id(conn, Some(&uuid), &hash_string)
             .await
@@ -157,8 +157,8 @@ pub async fn authenticated_account<'a>(
             session_string: session_string.clone(),
         }))
         .await
-        .map_err(|_| "grpc fn verify failed".to_owned())?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(|_| "grpc fn verify failed".to_owned())?;
 
     if !verify {
         return Err("Invalid session".to_owned());
@@ -171,8 +171,8 @@ pub async fn authenticated_account<'a>(
             session_string: session_string,
         }))
         .await
-        .map_err(|_| "grpc fn parse failed".to_owned())?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(|_| "grpc fn parse failed".to_owned())?;
 
     // hash username
     let HashResponse {
@@ -183,8 +183,8 @@ pub async fn authenticated_account<'a>(
             string: username.clone(),
         }))
         .await
-        .map_err(|_| "grpc fn hash failed".to_owned())?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(|_| "grpc fn hash failed".to_owned())?;
 
     let Some(account_info) = db::get_account(conn, &hash_username)
         .await

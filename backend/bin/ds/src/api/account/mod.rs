@@ -54,8 +54,8 @@ async fn sign_up(
             string: username.clone(),
         }))
         .await
-        .map_err(ErrorInternalServerError)?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(ErrorInternalServerError)?;
 
     let HashResponse {
         hash_string: password_hash,
@@ -63,8 +63,8 @@ async fn sign_up(
         .grcp
         .hash(gRpcRequest::new(HashRequest { string: password }))
         .await
-        .map_err(ErrorInternalServerError)?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(ErrorInternalServerError)?;
 
     match db::get_account(conn.get_ref(), &username_hash)
         .await
@@ -105,8 +105,8 @@ async fn login(
             string: username.clone(),
         }))
         .await
-        .map_err(ErrorInternalServerError)?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(ErrorInternalServerError)?;
 
     let HashResponse {
         hash_string: password_hash,
@@ -114,8 +114,8 @@ async fn login(
         .grcp
         .hash(gRpcRequest::new(HashRequest { string: password }))
         .await
-        .map_err(ErrorInternalServerError)?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(ErrorInternalServerError)?;
 
     match db::get_account(conn.get_ref(), &username_hash)
         .await
@@ -171,15 +171,15 @@ async fn logout(
             session_string: cookie.value().to_owned(),
         }))
         .await
-        .map_err(ErrorBadRequest)?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(ErrorBadRequest)?;
 
     let HashResponse { hash_string } = client
         .grcp
         .hash(gRpcRequest::new(HashRequest { string: username }))
         .await
-        .map_err(ErrorInternalServerError)?
-        .into_inner();
+        .and_then(|resq| Ok(resq.into_inner()))
+        .map_err(ErrorInternalServerError)?;
 
     // remove session id
     db::update_session_id(conn.get_ref(), None, &hash_string)
