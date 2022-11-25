@@ -8,7 +8,7 @@ Visualized overview
 
 ![](https://github.com/leonzchang/dragonstack/blob/master/assets/service.jpg)
 
-## gRPC server and Backend
+## Backend and gRPC Server
 Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
 Set up postgresql docker:
