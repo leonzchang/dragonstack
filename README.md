@@ -1,14 +1,14 @@
 # DragonStack
-A full-stack e-commerce site with with Node.js, PostgreSQL, React, Redux, RESTful API, authentication to interact with dragons. 
+A full-stack e-commerce site with Actix, PostgreSQL, React, Redux, RESTful API, authentication to interact with dragons. 
 ### [DEMO](https://dragonstackfront.herokuapp.com/)
 
 # Getting Started
 
 Visualized overview
 
-![](https://github.com/leonzchang/dragonstack/blob/master/assets/service.jpg)
+![](https://github.com/leonzchang/dragonstack/blob/master/assets/service.png)
 
-## Backend and gRPC Server
+## Backend and gRPC Auth Server
 Make sure an active instance of PostgresSQL is running with default port 5432, or here we start an instance with Docker.
 
 Set up postgresql docker:
@@ -30,7 +30,7 @@ Set up postgresql docker:
 
 3. Modify `APP_SECRET` string for hash encryption in [confidential.rs](https://github.com/leonzchang/dragonstack/blob/master/backend/bin/ds-auth-grpc/src/mono/confidential.rs) (optional)
 
-Start gRPC server: 
+Start gRPC auth server: 
 ```bash
 RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin ds-auth-grpc mono
 ```

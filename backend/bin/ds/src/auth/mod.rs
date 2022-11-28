@@ -11,7 +11,7 @@ use ds_core::{
 };
 
 use actix_web::{
-    cookie::{time::Duration, Cookie},
+    cookie::{time::Duration, Cookie, SameSite},
     error::ErrorInternalServerError,
     Error, HttpResponse,
 };
@@ -126,8 +126,9 @@ pub fn set_session_cookie(session_string: &str, message: &str) -> Result<HttpRes
     let cookie = Cookie::build(COOKIE_NAME, session_string)
         .path("/")
         .max_age(Duration::hours(1))
-        .http_only(true)
-        .secure(true)
+        .same_site(SameSite::Strict) // prevent CSRF/XSRF
+        .http_only(true) // prevent XSS, JS can not access
+        .secure(true) // https
         .finish();
 
     Ok(HttpResponse::Ok().cookie(cookie).json(Message {
@@ -188,9 +189,9 @@ pub async fn authenticated_account<'a>(
 
     let Some(account_info) = db::get_account(conn, &hash_username)
         .await
-        .map_err(|_|"get account error".to_owned())? else { return Err("Invalid session: does not match up user information".to_owned())};
+        .map_err(|_|"get account error".to_owned())? else {return Err("Invalid session: does not match up user information".to_owned())};
 
-    let Some(session_id) =  account_info.session_id.clone() else  { return Err("Invalid session: session should not be none".to_owned())};
+    let Some(session_id) =  account_info.session_id.clone() else  {return Err("Invalid session: session should not be none".to_owned())};
     let authenticated = uuid == session_id;
 
     Ok(AuthenticatedAccountInfo {
